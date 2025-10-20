@@ -1,5 +1,5 @@
 <?php
-namespace Prompt2Image\Core;
+namespace Prompt2Image\Class;
 
 if ( ! defined( 'ABSPATH' ) ) {
     exit;

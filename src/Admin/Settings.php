@@ -1,6 +1,8 @@
 <?php
 namespace Prompt2Image\Admin;
 
+use Prompt2Image\Class\FieldGenerator;
+
 if ( ! defined( 'ABSPATH' ) ) {
     exit; // Exit if accessed directly
 }
@@ -10,6 +12,45 @@ class Settings {
     const OPTION_GROUP = 'prompt2image_settings_group';
     const OPTION_NAME  = 'prompt2image_settings';
     const PAGE_SLUG    = 'prompt2image-settings';
+
+    /**
+     * Fields configuration with tabs
+     */
+    private $fields = [
+        'tab1' => [
+            [
+                'type'        => 'password',
+                'key'         => 'api_key',
+                'label'       => 'API Key',
+                'description' => 'Enter API key',
+                'default'     => '',
+            ],
+            [
+                'type'        => 'text',
+                'key'         => 'model',
+                'label'       => 'Model',
+                'description' => 'Default model',
+                'default'     => 'gemini-pro-vision',
+            ],
+        ],
+        'tab2' => [
+            [
+                'type'        => 'text',
+                'key'         => 'size',
+                'label'       => 'Default Image Size',
+                'description' => 'Image size (e.g., 512x512, 1024x1024)',
+                'default'     => '1024x1024',
+            ],
+            [
+                'type'        => 'url',
+                'key'         => 'url',
+                'label'       => 'Website',
+                'description' => 'Enter your website',
+                'default'     => '',
+            ],
+        ],
+
+    ];
 
     public function __construct() {
         add_action( 'admin_menu', [ $this, 'add_settings_page' ] );
@@ -37,108 +78,99 @@ class Settings {
         register_setting(
             self::OPTION_GROUP,
             self::OPTION_NAME,
-            [
-                'sanitize_callback' => [ $this, 'sanitize' ],
-            ]
+            [ 'sanitize_callback' => [ $this, 'sanitize' ] ]
         );
 
         add_settings_section(
             'prompt2image_main_section',
-            __( 'API Configuration', 'prompt2image' ),
+            '__return_false',
             '__return_false',
             self::PAGE_SLUG
         );
 
-        add_settings_field(
-            'api_key',
-            __( 'API Key', 'prompt2image' ),
-            [ $this, 'field_api_key' ],
-            self::PAGE_SLUG,
-            'prompt2image_main_section'
-        );
-
-        add_settings_field(
-            'model',
-            __( 'Model', 'prompt2image' ),
-            [ $this, 'field_model' ],
-            self::PAGE_SLUG,
-            'prompt2image_main_section'
-        );
-
-        add_settings_field(
-            'size',
-            __( 'Default Image Size', 'prompt2image' ),
-            [ $this, 'field_size' ],
-            self::PAGE_SLUG,
-            'prompt2image_main_section'
-        );
+        // Render all fields dynamically, no need to specify tab here
+        foreach ( $this->fields as $tab => $fields ) {
+            foreach ( $fields as $field ) {
+                add_settings_field(
+                    $field['key'],
+                    $field['label'],
+                    function() use ( $field ) {
+                        FieldGenerator::render_field( self::OPTION_NAME, $field );
+                    },
+                    self::PAGE_SLUG,
+                    'prompt2image_main_section'
+                );
+            }
+        }
     }
 
     /**
-     * Sanitize Input
+     * Sanitize input from settings page
      */
     public function sanitize( $input ) {
-        return [
-            'api_key' => sanitize_text_field( $input['api_key'] ?? '' ),
-            'model'   => sanitize_text_field( $input['model'] ?? 'gemini-pro-vision' ),
-            'size'    => sanitize_text_field( $input['size'] ?? '1024x1024' ),
-        ];
+    // Get existing values
+    $existing = get_option( self::OPTION_NAME, [] );
+
+    foreach ( $this->fields as $tab => $fields ) {
+        foreach ( $fields as $field ) {
+            $key = $field['key'];
+            $type = $field['type'];
+            $default = $field['default'] ?? '';
+
+            // Take submitted value or default
+            $value = $input[ $key ] ?? $existing[ $key ] ?? $default;
+
+            switch ( $type ) {
+                case 'url':
+                    $existing[ $key ] = esc_url_raw( $value );
+                    break;
+                case 'number':
+                    $existing[ $key ] = floatval( $value );
+                    break;
+                case 'checkbox':
+                    $existing[ $key ] = $value ? 1 : 0;
+                    break;
+                case 'textarea':
+                    $existing[ $key ] = sanitize_textarea_field( $value );
+                    break;
+                default:
+                    $existing[ $key ] = sanitize_text_field( $value );
+                    break;
+            }
+        }
     }
+
+    return $existing;
+}
+
 
     /**
-     * Get Option Value
-     */
-    public function get_option( $key, $default = '' ) {
-        $options = get_option( self::OPTION_NAME, [] );
-        return $options[ $key ] ?? $default;
-    }
-
-    // === Fields === //
-
-    public function field_api_key() {
-        $options = get_option( self::OPTION_NAME );
-        $value   = esc_attr( $options['api_key'] ?? '' );
-        printf(
-            '<input type="password" name="%1$s[api_key]" value="%2$s" class="regular-text" />',
-            esc_attr( self::OPTION_NAME ),
-            $value
-        );
-        echo '<p class="description">Enter your Google Gemini or OpenAI API key.</p>';
-    }
-
-    public function field_model() {
-        $options = get_option( self::OPTION_NAME );
-        $value   = esc_attr( $options['model'] ?? 'gemini-pro-vision' );
-        printf(
-            '<input type="text" name="%1$s[model]" value="%2$s" class="regular-text" />',
-            esc_attr( self::OPTION_NAME ),
-            $value
-        );
-        echo '<p class="description">Default model to use for image generation.</p>';
-    }
-
-    public function field_size() {
-        $options = get_option( self::OPTION_NAME );
-        $value   = esc_attr( $options['size'] ?? '1024x1024' );
-        printf(
-            '<input type="text" name="%1$s[size]" value="%2$s" class="regular-text" />',
-            esc_attr( self::OPTION_NAME ),
-            $value
-        );
-        echo '<p class="description">Image size (e.g., 512x512, 1024x1024).</p>';
-    }
-
-    /**
-     * Render Settings Page
+     * Render settings page with tabs
      */
     public function render_settings_page() {
+        $active_tab = isset( $_GET['tab'] ) ? sanitize_text_field( $_GET['tab'] ) : 'tab1';
         ?>
         <div class="wrap prompt2image-settings-wrap">
             <h1><?php esc_html_e( 'Prompt2Image Settings', 'prompt2image' ); ?></h1>
+
+            <h2 class="nav-tab-wrapper">
+                <?php foreach ( $this->fields as $tab_key => $fields ) : ?>
+                    <a href="?page=<?php echo self::PAGE_SLUG; ?>&tab=<?php echo esc_attr( $tab_key ); ?>"
+                       class="nav-tab <?php echo $active_tab === $tab_key ? 'nav-tab-active' : ''; ?>">
+                        <?php echo esc_html( ucfirst($tab_key) ); ?>
+                    </a>
+                <?php endforeach; ?>
+            </h2>
+
             <form method="post" action="options.php">
                 <?php
                 settings_fields( self::OPTION_GROUP );
-                do_settings_sections( self::PAGE_SLUG );
+
+                // Show only fields for active tab
+                foreach ( $this->fields[ $active_tab ] as $field ) {
+                    FieldGenerator::render_field( self::OPTION_NAME, $field );
+                }
+
                 submit_button( __( 'Save Settings', 'prompt2image' ) );
                 ?>
             </form>
@@ -147,7 +179,7 @@ class Settings {
     }
 
     /**
-     * Enqueue CSS for nice borders and design
+     * Enqueue CSS
      */
     public function enqueue_styles() {
         wp_enqueue_style(
