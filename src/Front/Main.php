@@ -19,7 +19,7 @@ class Main {
      * Add custom HTML or meta in <head>
      */
     public function add_custom_head() {
-        var_dump( P2I_PLUGIN_DIR . 'src/Admin' );
+        // var_dump( P2I_PLUGIN_DIR . 'src/Admin' );
     }
 
     /**
