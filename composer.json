@@ -5,7 +5,10 @@
   "autoload": {
     "psr-4": {
       "Prompt2Image\\": "src/"
-    }
+    },
+    "files": [
+      "src/functions.php"
+    ]
   },
   "require": {
     "guzzlehttp/guzzle": "^7.0"

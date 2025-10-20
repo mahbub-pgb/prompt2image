@@ -1,5 +1,5 @@
 <?php
-namespace Prompt2Image\Core;
+namespace Prompt2Image\Admin;
 
 class Ajax {
     public function __construct() {

@@ -1,5 +1,5 @@
 <?php
-namespace Prompt2Image\Core;
+namespace Prompt2Image\Admin;
 
 use GuzzleHttp\Client;
 

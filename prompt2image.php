@@ -9,7 +9,7 @@
 if (!defined('ABSPATH')) exit;
 
 // === Define Constants === //
-define( 'P2I_VERSION', '1.0.0' );
+define( 'P2I_VERSION', time() );
 define( 'P2I_PLUGIN_FILE', __FILE__ );
 define( 'P2I_PLUGIN_DIR', plugin_dir_path(__FILE__) );
 define( 'P2I_PLUGIN_URL', plugin_dir_url(__FILE__) );
@@ -18,7 +18,7 @@ define( 'P2I_PLUGIN_BASENAME', plugin_basename(__FILE__) );
 // === Autoload Classes === //
 require_once __DIR__ . '/vendor/autoload.php';
 
-use Prompt2Image\Core\Load;
+use Prompt2Image\Bootstrap\Load;
 
 // === Boot Load === //
 function prompt2image_init() {
