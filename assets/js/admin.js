@@ -38,9 +38,9 @@ jQuery(function($){
             $('#prompt2image-generate, #prompt2image-cancel').hide();
             $('#prompt2image-loader').show();
 
-            $.post(prompt2image.ajax_url, {
+            $.post(PROMPT2IMAGE.ajax_url, {
                 action: 'generate_ai_image',
-                nonce: prompt2image.nonce,
+                nonce: PROMPT2IMAGE.nonce,
                 prompt: userPrompt
             }, function(response){
                 $('#prompt2image-loader').hide();
