@@ -1,0 +1,13 @@
+{
+  "name": "motrox/prompt2image",
+  "description": "Generate AI images directly inside WordPress Media Library using Google Gemini API.",
+  "type": "wordpress-plugin",
+  "autoload": {
+    "psr-4": {
+      "Prompt2Image\\": "src/"
+    }
+  },
+  "require": {
+    "guzzlehttp/guzzle": "^7.0"
+  }
+}
