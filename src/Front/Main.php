@@ -11,15 +11,15 @@ class Main {
      * Constructor
      */
     public function __construct() {
-        add_action( 'wp_head', [ $this, 'add_custom_head' ] );
+        add_action( 'wp_head', [ $this, 'head' ] );
         add_action( 'wp_enqueue_scripts', [ $this, 'enqueue_assets' ] );
     }
 
     /**
      * Add custom HTML or meta in <head>
      */
-    public function add_custom_head() {
-        // var_dump( P2I_PLUGIN_DIR . 'src/Admin' );
+    public function head() {
+        var_dump( P2I_PLUGIN_DIR . 'src/Admin' );
     }
 
     /**

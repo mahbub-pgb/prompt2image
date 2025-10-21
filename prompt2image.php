@@ -4,7 +4,10 @@
  * Description: Generate AI images directly from the WordPress media library using an AI API.
  * Version: 1.0.0
  * Author: Mahbub
+ * Author URI: https://techwithmahbub.com/
+ * Plugin URI: https://techwithmahbub.com/
  */
+
 
 if (!defined('ABSPATH')) exit;
 
