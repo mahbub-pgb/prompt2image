@@ -63,12 +63,12 @@ class Settings {
      */
     public function add_settings_page() {
         add_submenu_page(
-            'upload.php', // parent slug for Media menu
-            __( 'Prompt2Image Settings', 'prompt2image' ), // Page title
-            __( 'Prompt2Image', 'prompt2image' ),          // Menu title
-            'manage_options',                              // Capability
-            self::PAGE_SLUG,                               // Menu slug
-            [ $this, 'render_settings_page' ]              // Callback
+            'upload.php', 
+            __( 'Prompt2Image Settings', 'prompt2image' ),
+            __( 'Prompt2Image', 'prompt2image' ),          
+            'manage_options',                              
+            self::PAGE_SLUG,                               
+            [ $this, 'render_settings_page' ]              
         );
     }
 
