@@ -1,0 +1,40 @@
+{
+  "name": "prompt2image",
+  "version": "1.0.0",
+  "description": "Generate AI images inside WordPress",
+  "main": "src/index.js",
+  "scripts": {
+    "build": "wp-scripts build",
+    "start": "wp-scripts start"
+  },
+  "dependencies": {
+    "@popperjs/core": "^2.11.8",
+    "@wordpress/components": "^30.6.0",
+    "@wordpress/element": "^6.33.0",
+    "bootstrap": "^5.3.8",
+    "js-cookie": "^3.0.5",
+    "react": "^18.3.1",
+    "react-bootstrap": "^2.10.10",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^7.8.2"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.28.4",
+    "@babel/preset-env": "^7.28.3",
+    "@babel/preset-react": "^7.27.1",
+    "@wordpress/scripts": "^30.26.0",
+    "babel-loader": "^10.0.0",
+    "css-loader": "^7.1.2",
+    "style-loader": "^4.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mahbub-pgb/prompt2image.git"
+  },
+  "author": "Mahbub",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mahbub-pgb/prompt2image/issues"
+  },
+  "homepage": "https://github.com/mahbub-pgb/prompt2image#readme"
+}

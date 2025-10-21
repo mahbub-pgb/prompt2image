@@ -1,0 +1,2 @@
+(()=>{var e=wp.element.createElement,t=wp.components.Button,c=document.getElementById("root");c&&ReactDOM.createRoot(c).render(e(function(){return React.createElement("div",{id:"root"},React.createElement("div",{className:"root-card"},React.createElement("h1",{className:"root-heading"},"Hello, my life!"),React.createElement(t,{className:"root-button",onClick:function(){return alert("Button clicked!")}},"Click Me!")))}))})();
+//# sourceMappingURL=main.js.map

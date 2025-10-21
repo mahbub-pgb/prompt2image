@@ -40,5 +40,21 @@ class Main {
             P2I_VERSION,
             true
         );
+
+        wp_enqueue_style(
+            'p2i',
+            P2I_PLUGIN_URL . 'build/style.css',
+            [],
+            P2I_VERSION
+        );
+
+        wp_enqueue_script(
+            'p2i-react',
+            P2I_PLUGIN_URL . 'build/main.js',
+            [ 'wp-element', 'wp-components', 'react', 'react-dom' ],
+            P2I_VERSION,
+            true
+        );
+
     }
 }
