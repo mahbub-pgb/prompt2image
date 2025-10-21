@@ -1,5 +1,4 @@
 <?php
-namespace Prompt2Image;
 
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
@@ -24,16 +23,13 @@ function p2i_get_plugin_version() {
  * @param mixed $var Variable to print
  * @param bool  $exit Exit after printing
  */
-function pri( $var, $exit = false ) {
-    echo '<div class="p2i-pri">';
-    echo '<h4 style="margin:0 0 10px;font-family:sans-serif;color:#fff;background:#0073aa;padding:5px 10px;border-radius:4px;">PRI Debug Output</h4>';
-    echo '<pre style="background:#f7f7f7;border:1px solid #ddd;color:#333;padding:15px;border-radius:4px;overflow:auto;">';
-    var_dump( $var );
-    echo '</pre>';
-    echo '</div>';
-
-    // Optional exit
-    if ( $exit ) {
-        exit;
+if ( ! function_exists( 'pri' ) ) {
+    function pri( $var, $exit = false ) {
+        echo '<pre style="background:#1e1e1e;color:#b5faff;padding:10px;border-radius:5px;">';
+        var_dump( $var );
+        echo '</pre>';
+        if ( $exit ) exit;
     }
 }
+
+
