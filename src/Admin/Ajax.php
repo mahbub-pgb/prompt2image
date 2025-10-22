@@ -28,19 +28,19 @@ class Ajax {
         // }
     }
 
-    public function connect_server() {
-        check_ajax_referer('prompt2image_nonce', 'nonce');
+    function connect_server() {
+        // Check nonce
+        if ( ! isset($_POST['wpnonce']) || ! wp_verify_nonce($_POST['wpnonce'], 'prompt2image_nonce') ) {
+            wp_send_json_error(['message' => 'Invalid nonce']);
+        }
 
+        // Simulate server connection (replace with real API call)
+        $connected = true; // change to actual connection logic
 
-        wp_send_json_success(['message' => 'Connected to server']);
-
-        // $generator = new ImageGenerator();
-        // $image_url = $generator->create_image($prompt);
-
-        // if ($image_url) {
-        //     wp_send_json_success(['image_url' => $image_url]);
-        // } else {
-        //     wp_send_json_error(['message' => 'Failed to generate image']);
-        // }
+        if($connected){
+            wp_send_json_success(['message' => 'Connected to the server successfully!']);
+        } else {
+            wp_send_json_error(['message' => 'Failed to connect to the server!']);
+        }
     }
 }

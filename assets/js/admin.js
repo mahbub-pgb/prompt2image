@@ -93,21 +93,28 @@ jQuery(document).ready(function($){
         $('#server-connect-modal').fadeOut(200);
     });
 
-    $('#confirm-connect').on('click', function(){
-        $('#server-connect-loader').show();
+    $('#confirm-connect').on('click', function(e){
+        e.preventDefault();
+        var $btn = $(this);
+        var $loader = $('#server-connect-loader');
+
+        // Show loader and disable button
+        $loader.show();
+        $btn.prop('disabled', true);
 
         $.ajax({
             url: PROMPT2IMAGE.ajaxurl,
             method: 'POST',
             data: { 
                 action: 'p2i_connect_server',
-                _wpnonce: PROMPT2IMAGE.nonce // move nonce here
+                _wpnonce: PROMPT2IMAGE.nonce
             },
             success: function(response){
-                $('#server-connect-loader').hide();
+                $loader.hide();
+                $btn.prop('disabled', false);
                 $('#server-connect-modal').fadeOut(200);
 
-                console.log( response );
+                console.log(response);
 
                 // if(response.success){
                 //     alert(response.data.message || 'Connected successfully!');
@@ -116,12 +123,14 @@ jQuery(document).ready(function($){
                 // }
             },
             error: function(){
-                $('#server-connect-loader').hide();
+                $loader.hide();
+                $btn.prop('disabled', false);
                 alert('Connection failed!');
             }
         });
     });
 });
+
 
 
 
