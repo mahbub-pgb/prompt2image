@@ -41,14 +41,14 @@
 }
 
 /* Form Fields */
-.prompt2image-field-wrap {
+/*.prompt2image-field-wrap {
     display: none;
     margin-bottom: 20px;
 }
 
 .prompt2image-field-wrap.active {
     display: block;
-}
+}*/
 
 .prompt2image-field-wrap label {
     display: block;

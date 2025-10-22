@@ -61,30 +61,30 @@ jQuery(function($){
 jQuery(document).ready(function($){
 
    
-    // Show first tab on page load
-    $('.prompt2image-field-wrap[data-tab="1"]').show().addClass('active');
+    // // Show first tab on page load
+    // $('.prompt2image-field-wrap[data-tab="1"]').show().addClass('active');
 
-    $('.nav-tab').click(function(e) {
-        e.preventDefault();
+    // $('.nav-tab').click(function(e) {
+    //     e.preventDefault();
 
-        // Remove active class from all tabs
-        $('.nav-tab').removeClass('nav-tab-active');
+    //     // Remove active class from all tabs
+    //     $('.nav-tab').removeClass('nav-tab-active');
 
-        // Add active class to clicked tab
-        $(this).addClass('nav-tab-active');
+    //     // Add active class to clicked tab
+    //     $(this).addClass('nav-tab-active');
 
-        // Get tab number
-        var tab = $(this).data('tab');
+    //     // Get tab number
+    //     var tab = $(this).data('tab');
 
-        // Hide all tab contents
-        $('.prompt2image-field-wrap').removeClass('active').hide();
+    //     // Hide all tab contents
+    //     $('.prompt2image-field-wrap').removeClass('active').hide();
 
-        // Show only fields with matching data-tab instantly
-        $('.prompt2image-field-wrap[data-tab="' + tab + '"]').show().addClass('active');
-    });
+    //     // Show only fields with matching data-tab instantly
+    //     $('.prompt2image-field-wrap[data-tab="' + tab + '"]').show().addClass('active');
+    // });
 
-    // Optional: Show only active tab on page load
-    $('.prompt2image-field-wrap').not('.active').hide();
+    // // Optional: Show only active tab on page load
+    // $('.prompt2image-field-wrap').not('.active').hide();
 
 
 

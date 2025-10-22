@@ -129,45 +129,22 @@ class Settings {
         <div class="prompt2image-settings-wrap">
             <h1>Prompt2Image Settings</h1>
 
-            <!-- Tabs -->
-            <div class="nav-tab-wrapper">
-                <a href="#" class="nav-tab nav-tab-active" data-tab="1">General</a>
-                <a href="#" class="nav-tab" data-tab="2">Advanced</a>
-            </div>
+            
 
             <form id="prompt2image-settings-form">
                 <!-- Tab 1 -->
-                <div class="prompt2image-field-wrap active" data-tab="1">
+                <div class="prompt2image-field-wrap active" >
                     <label for="api_key">API Key</label>
                     <input type="password" id="api_key" name="prompt2image[api_key]" value="<?php echo esc_attr($saved_data['api_key'] ?? ''); ?>">
                     <p class="description">Enter your API key provided by the service.</p>
-                </div>
+                </div>               
 
-                <div class="prompt2image-field-wrap" data-tab="1">
-                    <label for="model">Model</label>
-                    <input type="text" id="model" name="prompt2image[model]" value="<?php echo esc_attr($saved_data['model'] ?? 'gemini-pro-vision'); ?>">
-                    <p class="description">Select the model to generate images.</p>
-                </div>
-
-                <div class="prompt2image-field-wrap" data-tab="1">
+                <div class="prompt2image-field-wrap" >
                     <label>
                         <input type="checkbox" id="enable_feature" name="prompt2image[enable_feature]" value="1" <?php checked( $saved_data['enable_feature'] ?? 0, 1 ); ?>>
                         Enable Feature
                     </label>
-                </div>
-
-                <!-- Tab 2 -->
-                <div class="prompt2image-field-wrap" data-tab="2">
-                    <label for="size">Default Image Size</label>
-                    <input type="text" id="size" name="prompt2image[size]" value="<?php echo esc_attr($saved_data['size'] ?? '1024x1024'); ?>">
-                    <p class="description">Set the default size for generated images.</p>
-                </div>
-
-                <div class="prompt2image-field-wrap" data-tab="2">
-                    <label for="url">Website URL</label>
-                    <input type="url" id="url" name="prompt2image[url]" value="<?php echo esc_attr($saved_data['url'] ?? ''); ?>">
-                    <p class="description">Enter your website URL.</p>
-                </div>
+                </div>  
 
                 <input type="hidden" name="action" value="prompt2image_save_settings">
                 <input type="hidden" name="nonce" value="<?php echo wp_create_nonce('prompt2image_nonce'); ?>">
