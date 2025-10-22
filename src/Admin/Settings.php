@@ -79,6 +79,7 @@ class Settings {
      * Render settings page with tabs
      */
     public function render_settings_page() {
+        $saved_data = get_option('prompt2image-settings', []);
         ?>
         <div class="prompt2image-settings-wrap">
         <h1>Prompt2Image Settings</h1>
