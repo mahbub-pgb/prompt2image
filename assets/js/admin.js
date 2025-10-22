@@ -57,29 +57,24 @@ jQuery(function($){
             });
         });
     }
-});
-jQuery(document).ready(function($){
 
 
     // AJAX submit
-    $('#prompt2image-settings-form').on('submit', function(e){
-        e.preventDefault();
-        var formData = $(this).serialize();
 
-        $.ajax({
-            url: prompt2imageAjax.ajax_url,
-            type: 'POST',
-            data: formData + '&nonce=' + prompt2imageAjax.nonce,
-            success: function(response){
-                if(response.success){
-                    alert(response.data);
-                } else {
-                    alert('Error: ' + response.data);
-                }
-            },
-            error: function(xhr, status, error){
-                alert('AJAX error: ' + error);
-            }
+
+     $(document).on('submit', '#prompt2image-settings-form', function(e){
+        e.preventDefault();
+
+        var formData = $(this).serialize(); // serialize form fields
+
+        // Add action and nonce to the serialized data
+        formData += '&action=p2i_save_setting&_wpnonce=' + encodeURIComponent(PROMPT2IMAGE.nonce);
+
+        $.post(PROMPT2IMAGE.ajax_url, formData, function(response){
+            console.log(response);
+            // optionally show a success message
+        }).fail(function(){
+            alert('Connection failed. Please try again.');
         });
     });
 

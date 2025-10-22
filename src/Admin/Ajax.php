@@ -5,6 +5,7 @@ class Ajax {
     public function __construct() {
         add_action('wp_ajax_generate_ai_image', [ $this, 'generate_ai_image'] );
         add_action('wp_ajax_p2i_connect_server', [ $this, 'connect_server'] );
+        add_action('wp_ajax_p2i_save_setting', [ $this, 'save_setting'] );
     }
 
     public function generate_ai_image() {
@@ -56,5 +57,17 @@ class Ajax {
         } else {
             wp_send_json_error(['message' => 'Failed to connect to the server!']);
         }
+    }
+
+    function save_setting() {
+        if ( ! isset($_POST['_wpnonce']) || ! wp_verify_nonce($_POST['_wpnonce'], 'prompt2image_nonce') ) {
+            wp_send_json_error('Invalid nonce');
+        }
+
+        $input = $_POST['prompt2image'] ?? [];
+        $saved = array_map('sanitize_text_field', $input);
+        update_option('prompt2image-settings', $saved);
+
+        wp_send_json_success('Settings saved successfully!');
     }
 }
