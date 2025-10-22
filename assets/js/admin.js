@@ -1,4 +1,5 @@
 jQuery(function($){
+
     if ($('body').hasClass('post-type-attachment')) {
 
         // Insert AI button next to Bulk Select
@@ -57,3 +58,58 @@ jQuery(function($){
         });
     }
 });
+jQuery(document).ready(function($){
+
+   
+    // Show first tab on page load
+    $('.prompt2image-field-wrap[data-tab="1"]').show().addClass('active');
+
+    $('.nav-tab').click(function(e) {
+        e.preventDefault();
+
+        // Remove active class from all tabs
+        $('.nav-tab').removeClass('nav-tab-active');
+
+        // Add active class to clicked tab
+        $(this).addClass('nav-tab-active');
+
+        // Get tab number
+        var tab = $(this).data('tab');
+
+        // Hide all tab contents
+        $('.prompt2image-field-wrap').removeClass('active').hide();
+
+        // Show only fields with matching data-tab instantly
+        $('.prompt2image-field-wrap[data-tab="' + tab + '"]').show().addClass('active');
+    });
+
+    // Optional: Show only active tab on page load
+    $('.prompt2image-field-wrap').not('.active').hide();
+
+
+
+    // AJAX submit
+    $('#prompt2image-settings-form').on('submit', function(e){
+        e.preventDefault();
+        var formData = $(this).serialize();
+
+        $.ajax({
+            url: prompt2imageAjax.ajax_url,
+            type: 'POST',
+            data: formData + '&nonce=' + prompt2imageAjax.nonce,
+            success: function(response){
+                if(response.success){
+                    alert(response.data);
+                } else {
+                    alert('Error: ' + response.data);
+                }
+            },
+            error: function(xhr, status, error){
+                alert('AJAX error: ' + error);
+            }
+        });
+    });
+});
+
+
+

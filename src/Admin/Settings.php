@@ -32,6 +32,13 @@ class Settings {
                 'description' => 'Default model',
                 'default'     => 'gemini-pro-vision',
             ],
+            [
+                'type'        => 'checkbox',
+                'key'         => 'enable_feature',
+                'label'       => 'Enable Feature',
+                'description' => 'Check this box to enable the feature.',
+                'default'     => 0, // unchecked by default
+            ],
         ],
         'tab2' => [
             [
@@ -54,7 +61,6 @@ class Settings {
 
     public function __construct() {
         add_action( 'admin_menu', [ $this, 'add_settings_page' ] );
-        add_action( 'admin_init', [ $this, 'register_settings' ] );
         add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_styles' ] );
     }
 
@@ -72,112 +78,108 @@ class Settings {
         );
     }
 
-    /**
-     * Register Settings
-     */
-    public function register_settings() {
-        register_setting(
-            self::OPTION_GROUP,
-            self::OPTION_NAME,
-            [ 'sanitize_callback' => [ $this, 'sanitize' ] ]
-        );
-
-        add_settings_section(
-            'prompt2image_main_section',
-            '__return_false',
-            '__return_false',
-            self::PAGE_SLUG
-        );
-
-        // Render all fields dynamically, no need to specify tab here
-        foreach ( $this->fields as $tab => $fields ) {
-            foreach ( $fields as $field ) {
-                add_settings_field(
-                    $field['key'],
-                    $field['label'],
-                    function() use ( $field ) {
-                        FieldGenerator::render_field( self::OPTION_NAME, $field );
-                    },
-                    self::PAGE_SLUG,
-                    'prompt2image_main_section'
-                );
-            }
-        }
-    }
 
     /**
      * Sanitize input from settings page
      */
     public function sanitize( $input ) {
-    // Get existing values
-    $existing = get_option( self::OPTION_NAME, [] );
+        // Get existing values
+        $existing = get_option( self::OPTION_NAME, [] );
 
-    foreach ( $this->fields as $tab => $fields ) {
-        foreach ( $fields as $field ) {
-            $key = $field['key'];
-            $type = $field['type'];
-            $default = $field['default'] ?? '';
+        foreach ( $this->fields as $tab => $fields ) {
+            foreach ( $fields as $field ) {
+                $key     = $field['key'];
+                $type    = $field['type'];
+                $default = $field['default'] ?? '';
 
-            // Take submitted value or default
-            $value = $input[ $key ] ?? $existing[ $key ] ?? $default;
+                // Take submitted value (if any)
+                $has_value = array_key_exists( $key, $input );
+                $value     = $has_value ? $input[ $key ] : null;
 
-            switch ( $type ) {
-                case 'url':
-                    $existing[ $key ] = esc_url_raw( $value );
-                    break;
-                case 'number':
-                    $existing[ $key ] = floatval( $value );
-                    break;
-                case 'checkbox':
-                    $existing[ $key ] = $value ? 1 : 0;
-                    break;
-                case 'textarea':
-                    $existing[ $key ] = sanitize_textarea_field( $value );
-                    break;
-                default:
-                    $existing[ $key ] = sanitize_text_field( $value );
-                    break;
+                switch ( $type ) {
+                    case 'url':
+                        $existing[ $key ] = esc_url_raw( $value ?? $default );
+                        break;
+                    case 'number':
+                        $existing[ $key ] = floatval( $value ?? $default );
+                        break;
+                    case 'checkbox':
+                        $existing[ $key ] = $has_value ? 1 : 0;
+                        break;
+                    case 'textarea':
+                        $existing[ $key ] = sanitize_textarea_field( $value ?? $default );
+                        break;
+                    default:
+                        $existing[ $key ] = sanitize_text_field( $value ?? $default );
+                        break;
+                }
             }
         }
-    }
 
-    return $existing;
-}
+        return $existing;
+    }
 
 
     /**
      * Render settings page with tabs
      */
     public function render_settings_page() {
-        $active_tab = isset( $_GET['tab'] ) ? sanitize_text_field( $_GET['tab'] ) : 'tab1';
+        $saved_data = get_option( self::OPTION_NAME, [] );
         ?>
-        <div class="wrap prompt2image-settings-wrap">
-            <h1><?php esc_html_e( 'Prompt2Image Settings', 'prompt2image' ); ?></h1>
+        <div class="prompt2image-settings-wrap">
+            <h1>Prompt2Image Settings</h1>
 
-            <h2 class="nav-tab-wrapper">
-                <?php foreach ( $this->fields as $tab_key => $fields ) : ?>
-                    <a href="?page=<?php echo self::PAGE_SLUG; ?>&tab=<?php echo esc_attr( $tab_key ); ?>"
-                       class="nav-tab <?php echo $active_tab === $tab_key ? 'nav-tab-active' : ''; ?>">
-                        <?php echo esc_html( ucfirst($tab_key) ); ?>
-                    </a>
-                <?php endforeach; ?>
-            </h2>
+            <!-- Tabs -->
+            <div class="nav-tab-wrapper">
+                <a href="#" class="nav-tab nav-tab-active" data-tab="1">General</a>
+                <a href="#" class="nav-tab" data-tab="2">Advanced</a>
+            </div>
 
-            <form method="post" action="options.php">
-                <?php
-                settings_fields( self::OPTION_GROUP );
+            <form id="prompt2image-settings-form">
+                <!-- Tab 1 -->
+                <div class="prompt2image-field-wrap active" data-tab="1">
+                    <label for="api_key">API Key</label>
+                    <input type="password" id="api_key" name="prompt2image[api_key]" value="<?php echo esc_attr($saved_data['api_key'] ?? ''); ?>">
+                    <p class="description">Enter your API key provided by the service.</p>
+                </div>
 
-                // Show only fields for active tab
-                foreach ( $this->fields[ $active_tab ] as $field ) {
-                    FieldGenerator::render_field( self::OPTION_NAME, $field );
-                }
+                <div class="prompt2image-field-wrap" data-tab="1">
+                    <label for="model">Model</label>
+                    <input type="text" id="model" name="prompt2image[model]" value="<?php echo esc_attr($saved_data['model'] ?? 'gemini-pro-vision'); ?>">
+                    <p class="description">Select the model to generate images.</p>
+                </div>
 
-                submit_button( __( 'Save Settings', 'prompt2image' ) );
-                ?>
+                <div class="prompt2image-field-wrap" data-tab="1">
+                    <label>
+                        <input type="checkbox" id="enable_feature" name="prompt2image[enable_feature]" value="1" <?php checked( $saved_data['enable_feature'] ?? 0, 1 ); ?>>
+                        Enable Feature
+                    </label>
+                </div>
+
+                <!-- Tab 2 -->
+                <div class="prompt2image-field-wrap" data-tab="2">
+                    <label for="size">Default Image Size</label>
+                    <input type="text" id="size" name="prompt2image[size]" value="<?php echo esc_attr($saved_data['size'] ?? '1024x1024'); ?>">
+                    <p class="description">Set the default size for generated images.</p>
+                </div>
+
+                <div class="prompt2image-field-wrap" data-tab="2">
+                    <label for="url">Website URL</label>
+                    <input type="url" id="url" name="prompt2image[url]" value="<?php echo esc_attr($saved_data['url'] ?? ''); ?>">
+                    <p class="description">Enter your website URL.</p>
+                </div>
+
+                <input type="hidden" name="action" value="prompt2image_save_settings">
+                <input type="hidden" name="nonce" value="<?php echo wp_create_nonce('prompt2image_nonce'); ?>">
+
+                <button type="submit" class="button button-primary">Save Settings</button>
             </form>
         </div>
+
         <?php
     }
+
+
 
     /**
      * Enqueue CSS
