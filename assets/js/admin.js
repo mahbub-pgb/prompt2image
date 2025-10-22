@@ -82,9 +82,8 @@ jQuery(document).ready(function($){
             }
         });
     });
-});
 
-jQuery(document).ready(function($){
+
     $('#connect-server').on('click', function(){
         $('#server-connect-modal').fadeIn(200);
     });
@@ -93,43 +92,21 @@ jQuery(document).ready(function($){
         $('#server-connect-modal').fadeOut(200);
     });
 
-    $('#confirm-connect').on('click', function(e){
-        e.preventDefault();
-        var $btn = $(this);
-        var $loader = $('#server-connect-loader');
-
-        // Show loader and disable button
-        $loader.show();
-        $btn.prop('disabled', true);
-
-        $.ajax({
-            url: PROMPT2IMAGE.ajaxurl,
-            method: 'POST',
-            data: { 
+    $(document).on('click', '#confirm-connect', function(e){
+            e.preventDefault();
+            $.post(PROMPT2IMAGE.ajax_url, {
                 action: 'p2i_connect_server',
-                _wpnonce: PROMPT2IMAGE.nonce
-            },
-            success: function(response){
-                $loader.hide();
-                $btn.prop('disabled', false);
+                _wpnonce: PROMPT2IMAGE.nonce,
+            }, function(response){
+                console.log( response );
                 $('#server-connect-modal').fadeOut(200);
-
-                console.log(response);
-
-                // if(response.success){
-                //     alert(response.data.message || 'Connected successfully!');
-                // } else {
-                //     alert(response.data.message || 'Connection failed!');
-                // }
-            },
-            error: function(){
-                $loader.hide();
-                $btn.prop('disabled', false);
-                alert('Connection failed!');
-            }
+            });
         });
-    });
+
+
+
 });
+
 
 
 

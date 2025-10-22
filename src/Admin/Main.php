@@ -50,8 +50,8 @@ class Main {
                     <div class="server-modal-content">
                         <p>Do you want to connect via our server.</p>
                         <p>We collect your email and user name for autintication?</p>
-                        <button id="confirm-connect" class="button button-primary">Connect</button>
-                        <button id="cancel-connect" class="button">Cancel</button>
+                        <button  id="confirm-connect" class="button button-primary">Connect</button>
+                        <button  id="cancel-connect" class="button">Cancel</button>
                         <span id="server-connect-loader" style="display:none;"><span class="spinner is-active"></span></span>
                     </div>
                 </div>

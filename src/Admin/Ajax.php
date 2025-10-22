@@ -30,7 +30,7 @@ class Ajax {
 
     function connect_server() {
         // Check nonce
-        if ( ! isset($_POST['wpnonce']) || ! wp_verify_nonce($_POST['wpnonce'], 'prompt2image_nonce') ) {
+        if ( ! isset($_POST['_wpnonce']) || ! wp_verify_nonce($_POST['_wpnonce'], 'prompt2image_nonce') ) {
             wp_send_json_error(['message' => 'Invalid nonce']);
         }
 
