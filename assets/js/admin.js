@@ -94,16 +94,26 @@ jQuery(document).ready(function($){
     });
 
     $('#confirm-connect').on('click', function(){
-        $('#server-connect-modal').fadeOut(200);
         $('#server-connect-loader').show();
 
         $.ajax({
-            url: p2i_ajax.ajaxurl,
+            url: PROMPT2IMAGE.ajaxurl,
             method: 'POST',
-            data: { action: 'p2i_connect_server' },
+            data: { 
+                action: 'p2i_connect_server',
+                _wpnonce: PROMPT2IMAGE.nonce // move nonce here
+            },
             success: function(response){
                 $('#server-connect-loader').hide();
-                alert(response.data.message);
+                $('#server-connect-modal').fadeOut(200);
+
+                console.log( response );
+
+                // if(response.success){
+                //     alert(response.data.message || 'Connected successfully!');
+                // } else {
+                //     alert(response.data.message || 'Connection failed!');
+                // }
             },
             error: function(){
                 $('#server-connect-loader').hide();
@@ -112,6 +122,8 @@ jQuery(document).ready(function($){
         });
     });
 });
+
+
 
 
 

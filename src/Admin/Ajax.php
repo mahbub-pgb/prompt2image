@@ -4,6 +4,7 @@ namespace Prompt2Image\Admin;
 class Ajax {
     public function __construct() {
         add_action('wp_ajax_generate_ai_image', [ $this, 'generate_ai_image'] );
+        add_action('wp_ajax_p2i_connect_server', [ $this, 'connect_server'] );
     }
 
     public function generate_ai_image() {
@@ -16,6 +17,22 @@ class Ajax {
         }
 
         wp_send_json_success(['message' => 'Working']);
+
+        // $generator = new ImageGenerator();
+        // $image_url = $generator->create_image($prompt);
+
+        // if ($image_url) {
+        //     wp_send_json_success(['image_url' => $image_url]);
+        // } else {
+        //     wp_send_json_error(['message' => 'Failed to generate image']);
+        // }
+    }
+
+    public function connect_server() {
+        check_ajax_referer('prompt2image_nonce', 'nonce');
+
+
+        wp_send_json_success(['message' => 'Connected to server']);
 
         // $generator = new ImageGenerator();
         // $image_url = $generator->create_image($prompt);

@@ -91,14 +91,6 @@ class Settings {
                 <p class="description">Enter your Google Gemini API key provided by the service.</p>
             </div>               
 
-            <!-- Enable Feature -->
-            <div class="prompt2image-field-wrap">
-                <label>
-                    <input type="checkbox" id="enable_feature" name="prompt2image[enable_feature]" value="1" <?php checked( $saved_data['enable_feature'] ?? 0, 1 ); ?>>
-                    Enable Feature
-                </label>
-            </div>  
-
             <!-- Connect via Our Server -->
             <div class="prompt2image-field-wrap">
                 <button type="button" id="connect-server" class="button">Connect via Our Server</button>
