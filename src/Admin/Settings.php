@@ -102,10 +102,12 @@ class Settings {
                 <p class="description">Enter your Google Gemini API key provided by the service.</p>
             </div>               
 
+            <?php if ( empty( $saved_data['api_key'] )) { ?>
             <!-- Connect via Our Server -->
             <div class="prompt2image-field-wrap">
                 <button type="button" id="connect-server" class="button">Connect via Our Server</button>
             </div>
+            <?php } ?>
 
             <button type="submit" class="button button-primary">Save Settings</button>
         </form>
