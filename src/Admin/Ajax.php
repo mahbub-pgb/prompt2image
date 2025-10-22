@@ -34,11 +34,25 @@ class Ajax {
             wp_send_json_error(['message' => 'Invalid nonce']);
         }
 
+        // Get current user info
+        $current_user = wp_get_current_user();
+        if ( ! $current_user || 0 === $current_user->ID ) {
+            wp_send_json_error(['message' => 'User not logged in']);
+        }
+
+        $user_data = [
+            'username' => $current_user->user_login,
+            'email'    => $current_user->user_email,
+        ];
+
         // Simulate server connection (replace with real API call)
         $connected = true; // change to actual connection logic
 
-        if($connected){
-            wp_send_json_success(['message' => 'Connected to the server successfully!']);
+        if ($connected) {
+            wp_send_json_success([
+                'message'  => 'Connected to the server successfully!',
+                'user'     => $user_data,
+            ]);
         } else {
             wp_send_json_error(['message' => 'Failed to connect to the server!']);
         }
