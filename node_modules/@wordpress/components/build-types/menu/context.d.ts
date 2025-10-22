@@ -1,6 +1,0 @@
-/**
- * Internal dependencies
- */
-import type { ContextProps } from './types';
-export declare const Context: import("react").Context<ContextProps | undefined>;
-//# sourceMappingURL=context.d.ts.map
