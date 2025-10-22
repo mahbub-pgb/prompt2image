@@ -1,3 +1,4 @@
+/* === Settings Page Wrapper === */
 .prompt2image-settings-wrap {
     max-width: 700px;
     margin: 20px auto;
@@ -13,6 +14,7 @@
     margin-bottom: 20px;
 }
 
+/* Tabs */
 .nav-tab-wrapper {
     margin-bottom: 20px;
 }
@@ -38,6 +40,7 @@
     color: #fff;
 }
 
+/* Form Fields */
 .prompt2image-field-wrap {
     display: none;
     margin-bottom: 20px;
@@ -72,15 +75,82 @@
     margin-top: 3px;
 }
 
-.button-primary {
+/* Buttons */
+.button-primary,
+#prompt2image-generate,
+#prompt2image-cancel {
     background: #0073aa;
     border: none;
     color: #fff;
     padding: 10px 20px;
     border-radius: 5px;
     cursor: pointer;
+    transition: opacity 0.2s ease, background 0.2s ease;
 }
 
-.button-primary:hover {
+.button-primary:hover,
+#prompt2image-generate:hover,
+#prompt2image-cancel:hover {
     background: #006799;
+}
+
+/* Prompt2Image AI Generate Button */
+.prompt2image-btn {
+    margin: 10px 0 !important;
+}
+
+/* Modal overlay & container */
+#prompt2image-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 9999;
+}
+
+#prompt2image-modal .prompt2image-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+}
+
+#prompt2image-modal .prompt2image-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    max-width: 500px;
+    width: 90%;
+}
+
+/* Modal header */
+.prompt2image-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.prompt2image-header h2 {
+    margin: 0 0 0 10px;
+}
+
+/* Modal footer */
+.prompt2image-footer {
+    margin-top: 10px;
+    text-align: right;
+}
+
+/* Loader */
+#prompt2image-loader {
+    margin-left: 10px;
+    font-size: 13px;
+    color: #555;
 }
