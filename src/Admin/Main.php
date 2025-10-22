@@ -45,16 +45,25 @@ class Main {
             if( $screen && $screen->id === 'media_page_prompt2image-settings' ){ 
                 ?>
                 <!-- Server Connect Modal -->
-                <div id="server-connect-modal">
+                <div id="server-connect-modal" style="display:none;">
                     <div class="server-modal-overlay"></div>
+
                     <div class="server-modal-content">
-                        <p>Do you want to connect via our server.</p>
-                        <p>We collect your email and user name for autintication?</p>
-                        <button  id="confirm-connect" class="button button-primary">Connect</button>
-                        <button  id="cancel-connect" class="button">Cancel</button>
-                        <span id="server-connect-loader" style="display:none;"><span class="spinner is-active"></span></span>
+                        <h2>Connect to Prompt2Image Server</h2>
+                        <p>Do you want to connect via our server? We collect your email and username for authentication.</p>
+
+                        <div class="server-modal-actions">
+                            <button id="confirm-connect" class="button button-primary">
+                                <span class="btn-text">Connect</span>
+                                <span id="server-connect-loader" class="spinner" style="display:none; margin-left:6px;"></span>
+                            </button>
+
+                            <button id="cancel-connect" class="button">Cancel</button>
+                        </div>
                     </div>
                 </div>
+
+
                 <?php  
             }
 

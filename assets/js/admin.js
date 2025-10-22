@@ -93,19 +93,48 @@ jQuery(document).ready(function($){
     });
 
     $(document).on('click', '#confirm-connect', function(e){
-            e.preventDefault();
-            $.post(PROMPT2IMAGE.ajax_url, {
-                action: 'p2i_connect_server',
-                _wpnonce: PROMPT2IMAGE.nonce,
-            }, function(response){
-                console.log( response );
-                $('#server-connect-modal').fadeOut(200);
-            });
-        });
+        e.preventDefault();
 
+        var $btn = $(this);
+        var $loader = $('#server-connect-loader');
+        var $btnText = $btn.find('.btn-text');
+
+        // Start loading
+        $btn.prop('disabled', true);
+        $btnText.text('Connecting...');
+        $loader.fadeIn(150);
+
+        $.post(PROMPT2IMAGE.ajax_url, {
+            action: 'p2i_connect_server',
+            _wpnonce: PROMPT2IMAGE.nonce,
+        }, function(response){
+            console.log(response);
+
+            // Optional delay for smoother UI even if AJAX is instant
+            setTimeout(function() {
+                // Success animation
+                $btnText.text('✅ Connected');
+                $loader.fadeOut(150);
+
+                setTimeout(function(){
+                    // Reset and close modal
+                    $btn.prop('disabled', false);
+                    $btnText.text('Connect');
+                    $('#server-connect-modal').fadeOut(200);
+                }, 800);
+            }, 500);
+        }).fail(function(){
+            $loader.fadeOut(150);
+            $btn.prop('disabled', false);
+            $btnText.text('Connect');
+            alert('Connection failed. Please try again.');
+        });
+    });
 
 
 });
+
+
 
 
 
