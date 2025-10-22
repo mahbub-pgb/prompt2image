@@ -85,9 +85,19 @@ class Settings {
 
         <form id="prompt2image-settings-form">
             <!-- Tab 1: API Key -->
-            <div class="prompt2image-field-wrap active">
+            <div class="prompt2image-field-wrap">
                 <label for="api_key">API Key</label>
-                <input type="password" id="api_key" name="prompt2image[api_key]" value="<?php echo esc_attr($saved_data['api_key'] ?? ''); ?>">
+                
+                <input 
+                    type="password" 
+                    id="api_key" 
+                    name="prompt2image[api_key]" 
+                    value="<?php echo esc_attr($saved_data['api_key'] ?? ''); ?>" 
+                >
+                
+                <!-- Eye icon for show/hide password -->
+                <span id="toggle-api-key" class="dashicons dashicons-visibility"></span>
+
                 <p class="description">Enter your Google Gemini API key provided by the service.</p>
             </div>               
 

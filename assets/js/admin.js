@@ -83,7 +83,7 @@ jQuery(document).ready(function($){
         });
     });
 
-
+    /*Connect with api*/
     $('#connect-server').on('click', function(){
         $('#server-connect-modal').fadeIn(200);
     });
@@ -129,6 +129,15 @@ jQuery(document).ready(function($){
             $btnText.text('Connect');
             alert('Connection failed. Please try again.');
         });
+    });
+
+    /*Show the password*/
+
+    $('#toggle-api-key').on('click', function() {
+        var $input = $('#api_key');
+        var type = $input.attr('type') === 'password' ? 'text' : 'password';
+        $input.attr('type', type);
+        $(this).toggleClass('dashicons-hidden dashicons-visibility');
     });
 
 

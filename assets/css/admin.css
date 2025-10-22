@@ -409,3 +409,33 @@
 #server-connect-modal {
     display: none;
 }
+/* Container relative for the eye icon */
+.prompt2image-field-wrap {
+    position: relative;
+}
+
+/* API Key input padding for eye icon */
+#api_key {
+    padding-right: 35px; /* space for the eye icon */
+}
+
+/* Eye icon style */
+#toggle-api-key {
+    position: absolute;
+    right: 10px;
+    top: 38px; /* adjust if your input height changes */
+    cursor: pointer;
+    font-size: 16px;
+    color: #555;
+    transition: color 0.2s ease;
+}
+
+/* Hover effect for eye icon */
+#toggle-api-key:hover {
+    color: #000;
+}
+
+/* Optional: change icon color when showing password */
+#toggle-api-key.dashicons-hidden {
+    color: #999;
+}
