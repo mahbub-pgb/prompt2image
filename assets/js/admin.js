@@ -60,33 +60,6 @@ jQuery(function($){
 });
 jQuery(document).ready(function($){
 
-   
-    // // Show first tab on page load
-    // $('.prompt2image-field-wrap[data-tab="1"]').show().addClass('active');
-
-    // $('.nav-tab').click(function(e) {
-    //     e.preventDefault();
-
-    //     // Remove active class from all tabs
-    //     $('.nav-tab').removeClass('nav-tab-active');
-
-    //     // Add active class to clicked tab
-    //     $(this).addClass('nav-tab-active');
-
-    //     // Get tab number
-    //     var tab = $(this).data('tab');
-
-    //     // Hide all tab contents
-    //     $('.prompt2image-field-wrap').removeClass('active').hide();
-
-    //     // Show only fields with matching data-tab instantly
-    //     $('.prompt2image-field-wrap[data-tab="' + tab + '"]').show().addClass('active');
-    // });
-
-    // // Optional: Show only active tab on page load
-    // $('.prompt2image-field-wrap').not('.active').hide();
-
-
 
     // AJAX submit
     $('#prompt2image-settings-form').on('submit', function(e){
@@ -110,6 +83,36 @@ jQuery(document).ready(function($){
         });
     });
 });
+
+jQuery(document).ready(function($){
+    $('#connect-server').on('click', function(){
+        $('#server-connect-modal').fadeIn(200);
+    });
+
+    $('#cancel-connect').on('click', function(){
+        $('#server-connect-modal').fadeOut(200);
+    });
+
+    $('#confirm-connect').on('click', function(){
+        $('#server-connect-modal').fadeOut(200);
+        $('#server-connect-loader').show();
+
+        $.ajax({
+            url: p2i_ajax.ajaxurl,
+            method: 'POST',
+            data: { action: 'p2i_connect_server' },
+            success: function(response){
+                $('#server-connect-loader').hide();
+                alert(response.data.message);
+            },
+            error: function(){
+                $('#server-connect-loader').hide();
+                alert('Connection failed!');
+            }
+        });
+    });
+});
+
 
 
 

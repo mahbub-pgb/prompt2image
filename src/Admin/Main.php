@@ -37,6 +37,26 @@ class Main {
                         </div>
                     </div>
                 </div>
+
             <?php endif;
+
+            // pri( $screen->id );
+
+            if( $screen && $screen->id === 'media_page_prompt2image-settings' ){ 
+                ?>
+                <!-- Server Connect Modal -->
+            <div id="server-connect-modal">
+                <div class="server-modal-overlay"></div>
+                <div class="server-modal-content">
+                    <p>Do you want to connect via our server?</p>
+                    <button id="confirm-connect" class="button button-primary">Connect</button>
+                    <button id="cancel-connect" class="button">Cancel</button>
+                    <span id="server-connect-loader" style="display:none;"><span class="spinner is-active"></span></span>
+                </div>
+            </div>
+                <?php  
+            }
+
+
         }
 }

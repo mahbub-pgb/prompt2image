@@ -154,3 +154,207 @@
     font-size: 13px;
     color: #555;
 }
+/*Modal code*/
+
+/* === Connect via Our Server Button === */
+#connect-server {
+    background: #28a745;
+    border: none;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.2s ease;
+    margin-bottom: 20px;
+}
+
+#connect-server:hover {
+    background: #218838;
+    transform: translateY(-1px);
+}
+
+/* === Server Connect Modal Container === */
+#server-connect-modal {
+    display: none; /* Hidden by default */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 9999;
+
+    display: flex;           /* flex centering */
+    justify-content: center; /* horizontal center */
+    align-items: center;     /* vertical center */
+}
+
+/* Overlay */
+#server-connect-modal .server-modal-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    z-index: 1; /* below content */
+}
+
+/* Modal Content */
+#server-connect-modal .server-modal-content {
+    position: relative; /* relative to flex parent */
+    z-index: 2;         /* above overlay */
+    background: #fff;
+    padding: 25px 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    max-width: 400px;
+    width: 90%;
+    text-align: center;
+    margin: 196px auto;
+}
+
+
+
+/* Modal text */
+#server-connect-modal .server-modal-content p {
+    font-size: 14px;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+/* Modal buttons */
+#server-connect-modal .server-modal-content .button {
+    padding: 8px 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    border: none;
+    margin: 5px 5px 0 0;
+    transition: background 0.2s ease, transform 0.2s ease;
+}
+
+
+#server-connect-modal #confirm-connect {
+    background: #0073aa;
+    color: #fff;
+}
+
+#server-connect-modal #confirm-connect:hover {
+    background: #006799;
+    transform: translateY(-1px);
+}
+
+#server-connect-modal #cancel-connect {
+    background: #aaa;
+    color: #fff;
+}
+
+#server-connect-modal #cancel-connect:hover {
+    background: #888;
+    transform: translateY(-1px);
+}
+
+/* Loader inside modal */
+#server-connect-modal #server-connect-loader {
+    display: inline-block;
+    margin-left: 10px;
+    font-size: 13px;
+    color: #555;
+}
+/* === Connect via Our Server Button === */
+#connect-server {
+    background: #28a745;
+    border: none;
+    color: #fff;
+    padding: 5px 19px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.2s ease;
+    margin-bottom: 10px;
+    margin-top: 12px;
+}
+
+#connect-server:hover {
+    background: #218838;
+    transform: translateY(-1px);
+}
+
+/* === Server Connect Modal === */
+#server-connect-modal {
+    display: none; /* Hidden by default */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 9999;
+}
+
+/* Modal overlay */
+#server-connect-modal .modal-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+}
+
+/* Modal content */
+#server-connect-modal .modal-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #fff;
+    padding: 25px 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    max-width: 400px;
+    width: 90%;
+    text-align: center;
+}
+
+/* Modal text */
+#server-connect-modal .modal-content p {
+    font-size: 14px;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+/* Modal buttons */
+#server-connect-modal .modal-content .button {
+    padding: 8px 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    border: none;
+    transition: background 0.2s ease, transform 0.2s ease;
+}
+
+#server-connect-modal .modal-content #confirm-connect {
+    background: #0073aa;
+    color: #fff;
+    margin-right: 10px;
+}
+
+#server-connect-modal .modal-content #confirm-connect:hover {
+    background: #006799;
+    transform: translateY(-1px);
+}
+
+#server-connect-modal .modal-content #cancel-connect {
+    background: #aaa;
+    color: #fff;
+}a
+
+#server-connect-modal .modal-content #cancel-connect:hover {
+    background: #888;
+    transform: translateY(-1px);
+}
+
+/* Loader inside modal (optional) */
+#server-connect-modal #server-connect-loader {
+    display: inline-block;
+    margin-left: 10px;
+    font-size: 13px;
+    color: #555;
+}
