@@ -151,6 +151,7 @@ jQuery(document).ready(function($) {
                 _wpnonce: PROMPT2IMAGE.nonce,
             }, function(response){
                 console.log(response);
+                window.location.reload(); 
 
             }).fail(function(){
                 
