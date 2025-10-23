@@ -103,7 +103,8 @@ jQuery(function($){
             action: 'p2i_connect_server',
             _wpnonce: PROMPT2IMAGE.nonce,
         }, function(response){
-            console.log(response);
+            // console.log(response);
+
 
             // Optional delay for smoother UI even if AJAX is instant
             setTimeout(function() {
@@ -111,13 +112,7 @@ jQuery(function($){
                 $btnText.text('✅ Connected');
                 $('#connect-server').text('✅ Connected');
                 $loader.fadeOut(150);
-
-                setTimeout(function(){
-                    // Reset and close modal
-                    $btn.prop('disabled', false);
-                    $btnText.text('Connect');
-                    $('#server-connect-modal').fadeOut(200);
-                }, 800);
+                window.location.reload();                
             }, 500);
         }).fail(function(){
             $loader.fadeOut(150);
@@ -151,29 +146,17 @@ jQuery(document).ready(function($) {
             e.preventDefault();
 
             console.log( $disconnectButton );
+            $.post(PROMPT2IMAGE.ajax_url, {
+                action: 'disconnect_server',
+                _wpnonce: PROMPT2IMAGE.nonce,
+            }, function(response){
+                console.log(response);
 
-            $.ajax({
-                url: PROMPT2IMAGE.ajaxurl, // WordPress AJAX URL
-                method: 'POST',
-                data: {
-                    action: 'disconnect_server',
-                    _wpnonce: PROMPT2IMAGE.nonce
-                },
-                success: function(res) {
-                    if (res.success) {
-                        alert('Disconnected!');
-                        // Reset Connect button
-                        $connectButton.text('Connect with us').prop('disabled', false);
-                        // Remove Disconnect button
-                        $disconnectButton.remove();
-                    } else {
-                        alert(res.data.message);
-                    }
-                },
-                error: function() {
-                    alert('AJAX error. Please try again.');
-                }
+            }).fail(function(){
+                
             });
+
+            
         });
   
 

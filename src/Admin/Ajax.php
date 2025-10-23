@@ -46,9 +46,14 @@ class Ajax {
             wp_send_json_error( ['message' => 'User not logged in'] );
         }
 
+        // $user_data = [
+        //     'username'  => $current_user->user_login,
+        //     'email'     => $current_user->user_email,
+        // ];
+
         $user_data = [
-            'username' => $current_user->user_login,
-            'email' => $current_user->user_email,
+            'username'  => 'ma',
+            'email'     => 'ma1@gmail.com',
         ];
 
         // Prepare API request
@@ -126,18 +131,20 @@ class Ajax {
         $data = json_decode( $body, true );
 
         // Validate response
-        if ( is_array( $data ) && ! empty( $data['status'] ) ) {
+        if ( is_array( $data ) && isset( $data['status'] ) && $data['status'] === 'success' ) {
             // Remove API key from user meta
             delete_user_meta( $current_user->ID, '_prompt2image_api_key' );
 
             wp_send_json_success([
                 'message' => 'Disconnected from the server successfully!',
+                'api_response' => $data,
             ]);
         } else {
             $error_message = $data['message'] ?? 'Failed to disconnect from the server!';
             wp_send_json_error( ['message' => $error_message] );
         }
     }
+
 
     function save_setting() {
         if ( ! isset($_POST['_wpnonce']) || ! wp_verify_nonce($_POST['_wpnonce'], 'prompt2image_nonce') ) {
