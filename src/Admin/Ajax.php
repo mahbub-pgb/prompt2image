@@ -86,6 +86,58 @@ class Ajax {
         }
     }
 
+    public function disconnect_server() {
+        // Check nonce
+        if ( ! isset( $_POST['_wpnonce'] ) || ! wp_verify_nonce( $_POST['_wpnonce'], 'prompt2image_nonce' ) ) {
+            wp_send_json_error( ['message' => 'Invalid nonce'] );
+        }
+
+        // Get current logged-in user
+        $current_user = wp_get_current_user();
+        if ( ! $current_user || 0 === $current_user->ID ) {
+            wp_send_json_error( ['message' => 'User not logged in'] );
+        }
+
+        // Prepare user data for API request
+        $user_data = [
+            'email' => $current_user->user_email,
+        ];
+
+        // Prepare API request
+        $api_url = P2I_API_BASE_URL . 'disconnect';
+        $args = [
+            'body'    => wp_json_encode( $user_data ),
+            'headers' => [
+                'Content-Type' => 'application/json',
+            ],
+            'timeout' => 20,
+        ];
+
+        // Make API request
+        $response = wp_remote_post( $api_url, $args );
+
+        // Check for request error
+        if ( is_wp_error( $response ) ) {
+            wp_send_json_error( ['message' => $response->get_error_message()] );
+        }
+
+        // Parse response
+        $body = wp_remote_retrieve_body( $response );
+        $data = json_decode( $body, true );
+
+        // Validate response
+        if ( is_array( $data ) && ! empty( $data['status'] ) ) {
+            // Remove API key from user meta
+            delete_user_meta( $current_user->ID, '_prompt2image_api_key' );
+
+            wp_send_json_success([
+                'message' => 'Disconnected from the server successfully!',
+            ]);
+        } else {
+            $error_message = $data['message'] ?? 'Failed to disconnect from the server!';
+            wp_send_json_error( ['message' => $error_message] );
+        }
+    }
 
     function save_setting() {
         if ( ! isset($_POST['_wpnonce']) || ! wp_verify_nonce($_POST['_wpnonce'], 'prompt2image_nonce') ) {
