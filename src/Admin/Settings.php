@@ -79,43 +79,61 @@ class Settings {
      * Render settings page with tabs
      */
     public function render_settings_page() {
-        $saved_data = get_option('prompt2image-settings', []);
+        // Get stored Google Gemini API key from options
+        $google_gemeni = get_option( 'prompt2image-settings', [] );
+
+        // Get current logged-in user
+        $current_user   = wp_get_current_user();
+        $server_api_key = get_user_meta( $current_user->ID, '_prompt2image_api_key', true );
+
         ?>
         <div class="prompt2image-settings-wrap">
-        <h1>Prompt2Image Settings</h1>
+            <h1><?php esc_html_e( 'Prompt2Image Settings', 'prompt2image-api' ); ?></h1>
 
-        <form id="prompt2image-settings-form">
-            <!-- Tab 1: API Key -->
-            <div class="prompt2image-field-wrap">
-                <label for="api_key">API Key</label>
-                
-                <input 
-                    type="password" 
-                    id="api_key" 
-                    name="prompt2image[api_key]" 
-                    value="<?php echo esc_attr($saved_data['api_key'] ?? ''); ?>" 
-                >
-                
-                <!-- Eye icon for show/hide password -->
-                <span id="toggle-api-key" class="dashicons dashicons-visibility"></span>
+            <form id="prompt2image-settings-form">
 
-                <p class="description">Enter your Google Gemini API key provided by the service.</p>
-            </div>        
-                   
-            <button type="submit" class="button button-primary">Save Settings</button>
+                <?php if ( empty( $server_api_key ) ) : ?>
+                    <!-- API Key Input (only show if no server API key exists) -->
+                    <div class="prompt2image-field-wrap">
+                        <label for="api_key"><?php esc_html_e( 'API Key', 'prompt2image-api' ); ?></label>
 
-            <?php if ( empty( $saved_data['api_key'] )) { ?>
-            <!-- Connect via Our Server -->
-            <div class="prompt2image-field-wrap">
-                <button type="button" id="connect-server" class="button">Connect with us</button>
-            </div>
-            <?php } ?>
+                        <input 
+                            type="password" 
+                            id="api_key" 
+                            name="prompt2image[api_key]" 
+                            value="<?php echo esc_attr( $google_gemeni['api_key'] ?? '' ); ?>" 
+                        >
+                        
+                        <!-- Eye icon to toggle password visibility -->
+                        <span id="toggle-api-key" class="dashicons dashicons-visibility"></span>
 
-        </form>
-    </div>
+                        <p class="description">
+                            <?php esc_html_e( 'Enter your Google Gemini API key provided by the service.', 'prompt2image-api' ); ?>
+                        </p>
+                    </div>
 
+                    <!-- Save Settings Button -->
+                    <button type="submit" class="button button-primary">Save Settings</button>
+                <?php endif; ?>
+
+                <?php if ( empty( $server_api_key ) ) : ?>
+                    <!-- Connect via Our Server (if no server API key) -->
+                    <div class="prompt2image-field-wrap">
+                        <button type="button" id="connect-server" class="button button-connect">Connect with us</button>
+                    </div>
+                <?php else : ?>
+                    <!-- Show Connected / Disconnect buttons -->
+                    <div class="prompt2image-field-wrap prompt2image-buttons-wrapper">
+                        <button type="button" class="button button-connected ">Connected</button>
+                        <button type="button" id="disconnect-server" class="button button-disconnect">Disconnect</button>
+                    </div>
+                <?php endif; ?>
+
+            </form>
+        </div>
         <?php
     }
+
 
 
 

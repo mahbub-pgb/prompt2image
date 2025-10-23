@@ -29,35 +29,58 @@ class Ajax {
         // }
     }
 
-    function connect_server() {
+    public function connect_server() {
         // Check nonce
-        if ( ! isset($_POST['_wpnonce']) || ! wp_verify_nonce($_POST['_wpnonce'], 'prompt2image_nonce') ) {
-            wp_send_json_error(['message' => 'Invalid nonce']);
+        if ( ! isset( $_POST['_wpnonce'] ) || ! wp_verify_nonce( $_POST['_wpnonce'], 'prompt2image_nonce' ) ) {
+            wp_send_json_error( ['message' => 'Invalid nonce'] );
         }
 
         // Get current user info
         $current_user = wp_get_current_user();
         if ( ! $current_user || 0 === $current_user->ID ) {
-            wp_send_json_error(['message' => 'User not logged in']);
+            wp_send_json_error( ['message' => 'User not logged in'] );
         }
 
         $user_data = [
-            'username' => $current_user->user_login,
-            'email'    => $current_user->user_email,
+            'username' => 'test',
+            'email'    => 'test@gmail.com',
         ];
 
-        // Simulate server connection (replace with real API call)
-        $connected = true; // change to actual connection logic
+        // Prepare API request
+        $api_url = 'http://test.local/wp-json/prompt2image-api/v1/register';
+        $args = [
+            'body'        => wp_json_encode( $user_data ),
+            'headers'     => [
+                'Content-Type' => 'application/json',
+            ],
+            'timeout'     => 20,
+        ];
 
-        if ($connected) {
+        // Make API request
+        $response = wp_remote_post( $api_url, $args );
+
+        if ( is_wp_error( $response ) ) {
+            wp_send_json_error( ['message' => $response->get_error_message()] );
+        }
+
+        $body = wp_remote_retrieve_body( $response );
+        $data = json_decode( $body, true );
+
+        if ( isset( $data['api_key'] ) ) {
+            // Optionally, save API key in user meta
+            update_user_meta( $current_user->ID, '_prompt2image_api_key', sanitize_text_field( $data['api_key'] ) );
+
             wp_send_json_success([
-                'message'  => 'Connected to the server successfully!',
-                'user'     => $user_data,
+                'message' => 'Connected to the server successfully!',
+                'user'    => $user_data,
+                'api_key' => $data['api_key'],
             ]);
         } else {
-            wp_send_json_error(['message' => 'Failed to connect to the server!']);
+            $error_message = $data['message'] ?? 'Failed to connect to the server!';
+            wp_send_json_error( ['message' => $error_message] );
         }
     }
+
 
     function save_setting() {
         if ( ! isset($_POST['_wpnonce']) || ! wp_verify_nonce($_POST['_wpnonce'], 'prompt2image_nonce') ) {

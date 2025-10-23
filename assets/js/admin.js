@@ -109,6 +109,7 @@ jQuery(function($){
             setTimeout(function() {
                 // Success animation
                 $btnText.text('✅ Connected');
+                $('#connect-server').text('✅ Connected');
                 $loader.fadeOut(150);
 
                 setTimeout(function(){
@@ -137,6 +138,32 @@ jQuery(function($){
 
 
 });
+
+// Add Disconnect button if not already added
+                    if ($('#disconnect-server').length === 0) {
+                        $('<button id="disconnect-server" class="button button-secondary">Disconnect</button>')
+                            .insertAfter($button)
+                            .on('click', function() {
+                                // Handle disconnect
+                                $.ajax({
+                                    url: ajaxurl,
+                                    method: 'POST',
+                                    data: {
+                                        action: 'disconnect_server',
+                                        _wpnonce: prompt2image.nonce
+                                    },
+                                    success: function(res) {
+                                        if(res.success) {
+                                            alert('Disconnected!');
+                                            $button.text('Connect with us').prop('disabled', false);
+                                            $('#disconnect-server').remove();
+                                        } else {
+                                            alert(res.data.message);
+                                        }
+                                    }
+                                });
+                            });
+                    }
 
 
 

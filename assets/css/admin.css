@@ -440,4 +440,50 @@
     color: #999;
 }
 
+/* Flex container for buttons */
+.prompt2image-buttons-wrapper {
+    display: flex;
+    gap: 10px; /* Space between buttons */
+    align-items: center;
+    margin-top: 10px;
+}
+
+/* Connected button - green */
+.button-connected {
+    background-color: #46b450 !important;
+    border-color: #46b450 !important;
+    color: #fff !important;
+}
+
+.button-connected:hover {
+    background-color: #3a9e3e !important;
+    border-color: #3a9e3e !important;
+    color: #fff !important;
+}
+
+/* Disconnect button - red */
+.button-disconnect {
+    background-color: #dc3232 !important;
+    border-color: #dc3232 !important;
+    color: #fff !important;
+}
+
+.button-disconnect:hover {
+    background-color: #b52a2a !important;
+    border-color: #b52a2a !important;
+    color: #fff !important;
+}
+
+/* Optional: style for Connect with us button */
+.button-connect {
+    background-color: #0073aa;
+    border-color: #0073aa;
+    color: #fff;
+}
+
+.button-connect:hover {
+    background-color: #006799;
+    border-color: #006799;
+    color: #fff;
+}
 
