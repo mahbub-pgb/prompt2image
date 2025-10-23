@@ -1,10 +1,14 @@
 <?php
 namespace Prompt2Image\Admin;
 
+use Prompt2Image\Trait\Hook;
+
 class Main {
+
+    use Hook;
     public function __construct() {
-        add_action('admin_enqueue_scripts', [ $this, 'enqueue_assets'] );
-        add_action('admin_footer', [$this, 'render_modal']);
+        $this->action( 'admin_enqueue_scripts', [ $this, 'enqueue_assets'] );
+        $this->action( 'admin_footer', [$this, 'render_modal'] );
     }
 
     public function enqueue_assets() {

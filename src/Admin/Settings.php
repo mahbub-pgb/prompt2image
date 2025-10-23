@@ -2,12 +2,14 @@
 namespace Prompt2Image\Admin;
 
 use Prompt2Image\Class\FieldGenerator;
+use Prompt2Image\Trait\Hook;
 
 if ( ! defined( 'ABSPATH' ) ) {
     exit; // Exit if accessed directly
 }
 
 class Settings {
+    use Hook;
 
     const OPTION_GROUP = 'prompt2image_settings_group';
     const OPTION_NAME  = 'prompt2image_settings';
@@ -15,8 +17,8 @@ class Settings {
 
 
     public function __construct() {
-        add_action( 'admin_menu', [ $this, 'add_settings_page' ] );
-        add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_styles' ] );
+        $this->action( 'admin_menu', [ $this, 'add_settings_page' ] );
+        $this->action( 'admin_enqueue_scripts', [ $this, 'enqueue_styles' ] );
     }
 
     /**

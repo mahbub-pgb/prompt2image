@@ -1,18 +1,22 @@
 <?php
 namespace Prompt2Image\Front;
 
+use Prompt2Image\Trait\Hook;
+
 if ( ! defined( 'ABSPATH' ) ) {
     exit; // Exit if accessed directly
 }
 
 class Main {
 
+    use Hook;
+
     /**
      * Constructor
      */
     public function __construct() {
-        add_action( 'wp_head', [ $this, 'head' ] );
-        add_action( 'wp_enqueue_scripts', [ $this, 'enqueue_assets' ] );
+        $this->action( 'wp_head', [ $this, 'head' ] );
+        $this->action( 'wp_enqueue_scripts', [ $this, 'enqueue_assets' ] );
     }
 
     /**
