@@ -100,16 +100,17 @@ class Settings {
                 <span id="toggle-api-key" class="dashicons dashicons-visibility"></span>
 
                 <p class="description">Enter your Google Gemini API key provided by the service.</p>
-            </div>               
+            </div>        
+                   
+            <button type="submit" class="button button-primary">Save Settings</button>
 
             <?php if ( empty( $saved_data['api_key'] )) { ?>
             <!-- Connect via Our Server -->
             <div class="prompt2image-field-wrap">
-                <button type="button" id="connect-server" class="button">Connect via Our Server</button>
+                <button type="button" id="connect-server" class="button">Connect with us</button>
             </div>
             <?php } ?>
 
-            <button type="submit" class="button button-primary">Save Settings</button>
         </form>
     </div>
 
