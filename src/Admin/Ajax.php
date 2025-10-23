@@ -47,8 +47,8 @@ class Ajax {
         }
 
         $user_data = [
-            'username' => 'test',
-            'email'    => 'test@gmail.com',
+            'username' => $current_user->user_login,
+            'email' => $current_user->user_email,
         ];
 
         // Prepare API request
