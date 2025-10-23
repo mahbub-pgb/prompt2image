@@ -140,30 +140,46 @@ jQuery(function($){
 });
 
 // Add Disconnect button if not already added
-                    if ($('#disconnect-server').length === 0) {
-                        $('<button id="disconnect-server" class="button button-secondary">Disconnect</button>')
-                            .insertAfter($button)
-                            .on('click', function() {
-                                // Handle disconnect
-                                $.ajax({
-                                    url: ajaxurl,
-                                    method: 'POST',
-                                    data: {
-                                        action: 'disconnect_server',
-                                        _wpnonce: prompt2image.nonce
-                                    },
-                                    success: function(res) {
-                                        if(res.success) {
-                                            alert('Disconnected!');
-                                            $button.text('Connect with us').prop('disabled', false);
-                                            $('#disconnect-server').remove();
-                                        } else {
-                                            alert(res.data.message);
-                                        }
-                                    }
-                                });
-                            });
+jQuery(document).ready(function($) {
+
+    // Reference to the Connect button
+    var $disconnectButton = $('#disconnect-server');
+
+    
+        // Handle Disconnect click
+        $disconnectButton.on('click', function(e) {
+            e.preventDefault();
+
+            console.log( $disconnectButton );
+
+            $.ajax({
+                url: PROMPT2IMAGE.ajaxurl, // WordPress AJAX URL
+                method: 'POST',
+                data: {
+                    action: 'disconnect_server',
+                    _wpnonce: PROMPT2IMAGE.nonce
+                },
+                success: function(res) {
+                    if (res.success) {
+                        alert('Disconnected!');
+                        // Reset Connect button
+                        $connectButton.text('Connect with us').prop('disabled', false);
+                        // Remove Disconnect button
+                        $disconnectButton.remove();
+                    } else {
+                        alert(res.data.message);
                     }
+                },
+                error: function() {
+                    alert('AJAX error. Please try again.');
+                }
+            });
+        });
+  
+
+});
+
+   
 
 
 

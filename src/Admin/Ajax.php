@@ -1,11 +1,16 @@
 <?php
 namespace Prompt2Image\Admin;
 
+use Prompt2Image\Trait\Hook;
+
 class Ajax {
+    use Hook;
+
     public function __construct() {
-        add_action('wp_ajax_generate_ai_image', [ $this, 'generate_ai_image'] );
-        add_action('wp_ajax_p2i_connect_server', [ $this, 'connect_server'] );
-        add_action('wp_ajax_p2i_save_setting', [ $this, 'save_setting'] );
+        $this->ajax_priv( 'generate_ai_image', [ $this, 'generate_ai_image'] );
+        $this->ajax_priv( 'p2i_connect_server', [ $this, 'connect_server'] );
+        $this->ajax_priv( 'p2i_save_setting', [ $this, 'save_setting'] );
+        $this->ajax_priv( 'disconnect_server', [ $this, 'disconnect_server'] );
     }
 
     public function generate_ai_image() {
