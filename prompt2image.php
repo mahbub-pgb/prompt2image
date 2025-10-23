@@ -18,6 +18,13 @@ define( 'P2I_PLUGIN_DIR', plugin_dir_path(__FILE__) );
 define( 'P2I_PLUGIN_URL', plugin_dir_url(__FILE__) );
 define( 'P2I_PLUGIN_BASENAME', plugin_basename(__FILE__) );
 
+define( 'P2I_SITE_URL', 'http://test.local' );
+
+// Plugin Constants
+define( 'P2I_API_BASE_URL', trailingslashit( P2I_SITE_URL ) . 'wp-json/prompt2image-api/v1/' );
+
+
+
 // === Load Autoloader (if exists) === //
 if ( file_exists( __DIR__ . '/vendor/autoload.php' ) ) {
     require_once __DIR__ . '/vendor/autoload.php';

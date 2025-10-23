@@ -52,7 +52,7 @@ class Ajax {
         ];
 
         // Prepare API request
-        $api_url = 'http://test.local/wp-json/prompt2image-api/v1/register';
+        $api_url = P2I_API_BASE_URL . 'register';
         $args = [
             'body'        => wp_json_encode( $user_data ),
             'headers'     => [
