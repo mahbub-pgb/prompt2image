@@ -40,6 +40,18 @@ class Main {
                 </div>
             </div>
 
+            <!-- Image Modal -->
+
+            <div id="gemini-preview-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:9999; text-align:center;">
+                <div class="prompt2image-overlay" style="position:absolute; width:100%; height:100%; top:0; left:0;"></div>
+                <div style="position:relative; display:inline-block; max-width:90%; max-height:90%; margin-top:5%;">
+                    <img src="" style="max-width:100%; max-height:100%; border-radius:8px; box-shadow:0 0 10px #000;">
+                    <button class="close-preview" style="position:absolute; top:-10px; right:-10px; background:red; color:white; border:none; border-radius:50%; width:30px; height:30px; cursor:pointer;">×</button>
+                </div>
+            </div>
+
+
+
             <!-- History container -->
             <div id="gemini-output-single" style="margin-top:20px; width:80%; margin-left:auto; margin-right:auto;"></div>
 

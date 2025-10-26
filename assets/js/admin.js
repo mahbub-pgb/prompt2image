@@ -132,6 +132,22 @@ jQuery(document).ready(function($) {
 
     }
 
+     // Click on AI image in the preview area
+    $(document).on('click', '#gemini-output-single img', function() {
+        const src = $(this).attr('src');
+
+        // Set clicked image in modal
+        $('#gemini-preview-modal img').attr('src', src);
+
+        // Show modal
+        $('#gemini-preview-modal').fadeIn();
+    });
+
+    // Close modal when clicking overlay or close button
+    $(document).on('click', '#gemini-preview-modal .prompt2image-overlay, #gemini-preview-modal .close-preview', function() {
+        $('#gemini-preview-modal').fadeOut();
+    });
+
 });
 
 
