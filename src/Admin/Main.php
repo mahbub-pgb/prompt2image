@@ -42,7 +42,8 @@ class Main {
                     </div>
                 </div>
 
-                <div id="gemini-output" style="margin-top:20px;"></div>
+                <div id="gemini-output-history" style="margin-top:20px;"></div>
+
 
 
             <?php endif;
