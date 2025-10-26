@@ -42,6 +42,9 @@ class Main {
                     </div>
                 </div>
 
+                <div id="gemini-output" style="margin-top:20px;"></div>
+
+
             <?php endif;
 
             // pri( $screen->id );

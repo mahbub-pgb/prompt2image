@@ -17,22 +17,44 @@ class Ajax {
         check_ajax_referer('prompt2image_nonce', 'nonce');
 
         $prompt = sanitize_text_field($_POST['prompt'] ?? '');
-
         if (empty($prompt)) {
-            wp_send_json_error(['message' => 'Prompt cannot be empty']);
+            wp_send_json_error('Prompt is empty');
         }
 
-        wp_send_json_success(['message' => 'Working']);
+        $api_key = 'AIzaSyBNXcqRubHqWorc2fA2fJm9lw9Ex4SZJa8';
+        $url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-preview-image-generation:generateContent";
 
-        // $generator = new ImageGenerator();
-        // $image_url = $generator->create_image($prompt);
+        $body = [
+            "contents" => [
+                [
+                    "parts" => [
+                        ["text" => $prompt]
+                    ]
+                ]
+            ],
+            "generationConfig" => [
+                "responseModalities" => ["TEXT", "IMAGE"]
+            ]
+        ];
 
-        // if ($image_url) {
-        //     wp_send_json_success(['image_url' => $image_url]);
-        // } else {
-        //     wp_send_json_error(['message' => 'Failed to generate image']);
-        // }
+        $response = wp_remote_post($url, [
+            'headers' => [
+                'Content-Type' => 'application/json',
+                'X-goog-api-key' => $api_key
+            ],
+            'body' => json_encode($body),
+            'timeout' => 120
+        ]);
+
+        if (is_wp_error($response)) {
+            wp_send_json_error($response->get_error_message());
+        }
+
+        $data = json_decode(wp_remote_retrieve_body($response), true);
+
+        wp_send_json_success($data);
     }
+
 
     public function connect_server() {
         // Check nonce
