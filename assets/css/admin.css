@@ -514,6 +514,8 @@
     border-left: 4px solid #4CAF50; /* Colored marker for candidates */
     background: #fff;
     border-radius: 5px;
+    margin-bottom: 40px;
+    width: 320px;
 }
 
 /* Candidate header */
