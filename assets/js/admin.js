@@ -35,6 +35,7 @@ jQuery(document).ready(function($) {
 
         $('#prompt2image-loader').show();
         $('#prompt2image-generate, #prompt2image-cancel').hide();
+        $('#prompt2image-text').prop('disabled', true);
 
         $.post(PROMPT2IMAGE.ajax_url, {
             action: 'generate_ai_image',
@@ -127,6 +128,7 @@ jQuery(document).ready(function($) {
             // Show modal and buttons
             $('#prompt2image-modal').fadeIn();
             $('#prompt2image-generate, #prompt2image-cancel').fadeIn();
+            $('#prompt2image-text').prop('disabled', false).val($('#prompt2image-text').val().trim());
         });
 
 
