@@ -33,6 +33,8 @@ jQuery(document).ready(function($) {
         const userPrompt = $('#prompt2image-text').val().trim();
         if (!userPrompt) { alert('Please enter a prompt!'); return; }
 
+        lastPrompt = userPrompt; // Save the prompt for regeneration
+
         $('#prompt2image-loader').show();
         $('#prompt2image-generate, #prompt2image-cancel').hide();
         $('#prompt2image-text').prop('disabled', true);
@@ -121,14 +123,15 @@ jQuery(document).ready(function($) {
 
        // Regenerate button click handler
         $(document).on('click', '.p2i-regenerate-image', function() {
-            // Clear previous prompt and preview
-            $('#prompt2image-text').val('');
+            // Clear preview
             $('#gemini-output-single').html('');
 
             // Show modal and buttons
             $('#prompt2image-modal').fadeIn();
             $('#prompt2image-generate, #prompt2image-cancel').fadeIn();
-            $('#prompt2image-text').prop('disabled', false).val($('#prompt2image-text').val().trim());
+
+            // Enable input and set it to last prompt
+            $('#prompt2image-text').prop('disabled', false).val(lastPrompt);
         });
 
 
