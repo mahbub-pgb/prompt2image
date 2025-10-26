@@ -27,70 +27,72 @@ jQuery(document).ready(function($) {
             $('#prompt2image-modal').fadeOut();
         });
 
-        // Generate AI Image
-        $(document).on('click', '#prompt2image-generate', function() {
-            const userPrompt = $('#prompt2image-text').val().trim();
-            if (!userPrompt) { 
-                toastr.warning('Please enter a prompt!'); 
-                return; 
+            // Generate AI Image
+    // Generate AI Image
+    $(document).on('click', '#prompt2image-generate', function() {
+        const userPrompt = $('#prompt2image-text').val().trim();
+        if (!userPrompt) { alert('Please enter a prompt!'); return; }
+
+        lastPrompt = userPrompt; // Save the prompt for regeneration
+
+        $('#prompt2image-loader').show();
+        $('#prompt2image-generate, #prompt2image-cancel').hide();
+        $('#prompt2image-text').prop('disabled', true);
+
+        $.post(PROMPT2IMAGE.ajax_url, {
+            action: 'generate_ai_image',
+            nonce: PROMPT2IMAGE.nonce,
+            prompt: userPrompt
+        }, function(response) {
+
+            $('#prompt2image-loader').hide();
+            $('#prompt2image-modal').hide();
+
+            let html = '<div class="gemini-candidate">';
+            html += '<h4>AI Image Preview</h4>';
+
+            if (response.success && response.data.candidates && response.data.candidates.length > 0) {
+                const candidate = response.data.candidates[0];
+                if (candidate.content && candidate.content.parts) {
+                    let foundImage = false;
+
+                    for (let i = 0; i < candidate.content.parts.length; i++) {
+                        const part = candidate.content.parts[i];
+                        if (part.inlineData && part.inlineData.data && part.inlineData.data.trim() !== '') {
+                            const base64Data = part.inlineData.data;
+                            const mimeType   = part.inlineData.mimeType;
+                            const filename   = 'ai-image.png';
+
+                            // Show image
+                            html += '<img src="data:' + mimeType + ';base64,' + base64Data + '" style="max-width:300px; margin-top:10px; display:block;">';
+
+                            // Buttons: Save + Regenerate
+                            html += '<div style="margin-top:10px;">';
+                            html += '<button class="p2i-save-image button" data-base64="' + base64Data + '" data-mime="' + mimeType + '" data-filename="' + filename + '">Save to Media Library</button>';
+                            html += '<button class="p2i-regenerate-image button" style="margin-left:5px;">Regenerate Image</button>';
+                            html += '</div>';
+
+                            foundImage = true;
+                            break; // show only first image
+                        }
+                    }
+                    if (!foundImage) html += '<p>No image returned.</p>';
+                }
+            } else {
+                html += '<p>Error generating image.</p>';
             }
 
-            lastPrompt = userPrompt; // Save the prompt for regeneration
+            html += '</div>';
 
-            $('#prompt2image-loader').show();
-            $('#prompt2image-generate, #prompt2image-cancel').hide();
-            $('#prompt2image-text').prop('disabled', true);
+            // Insert the preview **inside modal**
+            $('#gemini-output-single').html(html);
 
-            $.post(PROMPT2IMAGE.ajax_url, {
-                action: 'generate_ai_image',
-                nonce: PROMPT2IMAGE.nonce,
-                prompt: userPrompt
-            }, function(response) {
-
-                $('#prompt2image-loader').hide();
-                $('#prompt2image-modal').hide();
-
-                let html = '<div class="gemini-candidate">';
-                html += '<h4>AI Image Preview</h4>';
-
-                if (response.success && response.data.candidates && response.data.candidates.length > 0) {
-                    const candidate = response.data.candidates[0];
-                    if (candidate.content && candidate.content.parts) {
-                        let foundImage = false;
-
-                        for (let i = 0; i < candidate.content.parts.length; i++) {
-                            const part = candidate.content.parts[i];
-                            if (part.inlineData && part.inlineData.data && part.inlineData.data.trim() !== '') {
-                                const base64Data = part.inlineData.data;
-                                const mimeType   = part.inlineData.mimeType;
-                                const filename   = 'ai-image.png';
-
-                                // Show image
-                                html += '<img src="data:' + mimeType + ';base64,' + base64Data + '" style="max-width:300px; margin-top:10px; display:block;">';
-
-                                // Buttons: Save + Regenerate
-                                html += '<div style="margin-top:10px;">';
-                                html += '<button class="p2i-save-image button" data-base64="' + base64Data + '" data-mime="' + mimeType + '" data-filename="' + filename + '">Save to Media Library</button>';
-                                html += '<button class="p2i-regenerate-image button" style="margin-left:5px;">Regenerate Image</button>';
-                                html += '</div>';
-
-                                foundImage = true;
-                                break; // show only first image
-                            }
-                        }
-                        if (!foundImage) html += '<p>No image returned.</p>';
-                    }
-                } else {
-                    html += '<p>Error generating image.</p>';
-                }
-
-                html += '</div>';
-
-                // Insert the preview **inside modal**
-                $('#gemini-output-single').html(html);
-
-            });
+            // DO NOT hide the modal here
+            // $('#prompt2image-modal').fadeOut();  <-- remove this line
         });
+    });
+
+
 
         // Save image to Media Library
         $(document).on('click', '.p2i-save-image', function() {
@@ -99,9 +101,7 @@ jQuery(document).ready(function($) {
             const mimeType = $btn.data('mime');
             const filename = $btn.data('filename');
 
-            $btn.prop('disabled', true);
-
-            $('#prompt2image-loader').show();
+            $btn.prop('disabled', true).text('Saving...');
 
             $.post(PROMPT2IMAGE.ajax_url, {
                 action: 'p2i_save_image_media',
@@ -110,19 +110,18 @@ jQuery(document).ready(function($) {
                 mime_type: mimeType,
                 filename: filename
             }, function(saveResp) {
-                $('#prompt2image-loader').hide();
                 if (saveResp.success && saveResp.data.url) {
-                    toastr.success('Image saved! You can view it in Media Library.');
+                    alert('Image saved! You can view it in Media Library.');
                     $('#prompt2image-modal').fadeOut();
                     window.location.reload();
                 } else {
-                    toastr.error('Failed to save image.');
+                    alert('Failed to save image.');
                     $btn.prop('disabled', false).text('Save to Media Library');
                 }
             });
         });
 
-        // Regenerate button click handler
+       // Regenerate button click handler
         $(document).on('click', '.p2i-regenerate-image', function() {
             // Clear preview
             $('#gemini-output-single').html('');
@@ -135,9 +134,10 @@ jQuery(document).ready(function($) {
             $('#prompt2image-text').prop('disabled', false).val(lastPrompt);
         });
 
+
     }
 
-    // Click on AI image in the preview area
+     // Click on AI image in the preview area
     $(document).on('click', '#gemini-output-single img', function() {
         const src = $(this).attr('src');
 
@@ -154,7 +154,6 @@ jQuery(document).ready(function($) {
     });
 
 });
-
 
 
 
