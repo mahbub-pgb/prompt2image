@@ -12,16 +12,22 @@ class Main {
     }
 
     public function enqueue_assets() {
+        // Your plugin CSS & JS
         wp_enqueue_style( 'prompt2image', P2I_PLUGIN_URL . 'assets/css/admin.css', [], P2I_VERSION );
         wp_enqueue_script( 'prompt2image', P2I_PLUGIN_URL . 'assets/js/admin.js', ['jquery'], P2I_VERSION, true );
 
+        // Toastr CSS & JS from CDN
+        wp_enqueue_style( 'toastr-css', 'https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css', [], '2.1.4' );
+        wp_enqueue_script( 'toastr-js', 'https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js', ['jquery'], '2.1.4', true );
 
+        // Pass data to JS
         wp_localize_script( 'prompt2image', 'PROMPT2IMAGE', [
-            'ajax_url' => admin_url('admin-ajax.php'),
-            'nonce'    => wp_create_nonce('prompt2image_nonce'),
+            'ajax_url'    => admin_url('admin-ajax.php'),
+            'nonce'       => wp_create_nonce('prompt2image_nonce'),
             'buttonTitle' => __( 'Generate with AI', 'prompt2image' ),
         ] );
     }
+
     public function render_modal() {
             // Only show modal in Media Library
             $screen = get_current_screen();
