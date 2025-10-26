@@ -33,14 +33,6 @@ class Main {
                     <span id="prompt2image-cancel" style="position:absolute; top:10px; right:15px; cursor:pointer; font-size:20px;">&times;</span>
                     <h2>Generate AI Image</h2>
                     <textarea id="prompt2image-text" style="width:100%; height:100px; padding:10px; margin-bottom:10px;" placeholder="Enter prompt here..."></textarea>
-                    <!-- <div style="text-align:right; position: relative;">
-                        <span id="prompt2image-loader" style="display:none; align-items:center; gap:6px;">
-                            <span class="p2i-spinner"></span>
-                            Generating...
-                        </span>
-                        <button id="prompt2image-generate" class="button">Generate</button>
-                        <button id="prompt2image-cancel" class="button">Cancel</button>
-                    </div> -->
 
                     <!-- Loader -->
                     <div id="prompt2image-loader" style="display:none; text-align:center; margin-bottom:10px;">
