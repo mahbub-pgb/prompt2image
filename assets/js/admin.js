@@ -28,6 +28,7 @@ jQuery(document).ready(function($) {
         });
 
             // Generate AI Image
+    // Generate AI Image
     $(document).on('click', '#prompt2image-generate', function() {
         const userPrompt = $('#prompt2image-text').val().trim();
         if (!userPrompt) { alert('Please enter a prompt!'); return; }
@@ -42,7 +43,7 @@ jQuery(document).ready(function($) {
         }, function(response) {
 
             $('#prompt2image-loader').hide();
-            $('#prompt2image-generate, #prompt2image-cancel').show();
+            $('#prompt2image-modal').hide();
 
             let html = '<div class="gemini-candidate">';
             html += '<h4>AI Image Preview</h4>';
@@ -80,14 +81,14 @@ jQuery(document).ready(function($) {
 
             html += '</div>';
 
-            // Insert the preview
+            // Insert the preview **inside modal**
             $('#gemini-output-single').html(html);
 
-            // **Hide modal automatically after showing preview**
-            $('#prompt2image-modal').fadeOut();
-
+            // DO NOT hide the modal here
+            // $('#prompt2image-modal').fadeOut();  <-- remove this line
         });
     });
+
 
 
         // Save image to Media Library
