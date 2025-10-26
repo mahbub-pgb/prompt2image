@@ -101,7 +101,8 @@ jQuery(document).ready(function($) {
             const mimeType = $btn.data('mime');
             const filename = $btn.data('filename');
 
-            $btn.prop('disabled', true).text('Saving...');
+            $btn.prop('disabled', true);
+
 
             $.post(PROMPT2IMAGE.ajax_url, {
                 action: 'p2i_save_image_media',
