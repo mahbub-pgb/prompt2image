@@ -118,12 +118,17 @@ jQuery(document).ready(function($) {
             });
         });
 
-        // Regenerate button
+       // Regenerate button click handler
         $(document).on('click', '.p2i-regenerate-image', function() {
-            $('#prompt2image-text').val(''); // reset input if desired
-            $('#gemini-output-single').html(''); // clear previous preview
-            $('#prompt2image-modal').fadeIn(); // reopen modal
+            // Clear previous prompt and preview
+            $('#prompt2image-text').val('');
+            $('#gemini-output-single').html('');
+
+            // Show modal and buttons
+            $('#prompt2image-modal').fadeIn();
+            $('#prompt2image-generate, #prompt2image-cancel').fadeIn();
         });
+
 
     }
 
