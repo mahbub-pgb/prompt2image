@@ -26,23 +26,24 @@ class Main {
             // Only show modal in Media Library
             $screen = get_current_screen();
             if ($screen && $screen->post_type === 'attachment') : ?>
-                <div id="prompt2image-modal" style="display:none;">
-                    <div class="prompt2image-overlay"></div>
-                    <div class="prompt2image-content">
-                        <div class="prompt2image-header">
-                            <span class="dashicons dashicons-art"></span>
-                            <h2>Generate AI Image</h2>
-                        </div>
-                        <textarea id="prompt2image-text" rows="4" placeholder="Write your prompt here..." style="width:100%;"></textarea>
-                        <div class="prompt2image-footer">
-                            <button class="button button-secondary" id="prompt2image-cancel">Cancel</button>
-                            <button class="button button-primary" id="prompt2image-generate">Generate</button>
-                            <span id="prompt2image-loader" style="display:none;"><span class="spinner is-active"></span> </span>
-                        </div>
+                <!-- AI Image Generator Modal -->
+            <div id="prompt2image-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:9999;">
+                <div class="prompt2image-modal-content" style="max-width:800px; margin:50px auto; background:#fff; border-radius:8px; padding:20px; position:relative;">
+                    <span id="prompt2image-cancel" style="position:absolute; top:10px; right:15px; cursor:pointer; font-size:20px;">&times;</span>
+                    <h2>Generate AI Image</h2>
+                    <textarea id="prompt2image-text" style="width:100%; height:100px; padding:10px; margin-bottom:10px;" placeholder="Enter prompt here..."></textarea>
+                    <div style="text-align:right;">
+                        <span id="prompt2image-loader" style="display:none;">Generating...</span>
+                        <button id="prompt2image-generate" class="button">Generate</button>
+                        <button id="prompt2image-cancel" class="button">Cancel</button>
                     </div>
                 </div>
+            </div>
 
-                <div id="gemini-output-history" style="margin-top:20px;"></div>
+            <!-- History container -->
+            <div id="gemini-output-single" style="margin-top:20px; width:80%; margin-left:auto; margin-right:auto;"></div>
+
+
 
 
 

@@ -11,6 +11,7 @@ class Ajax {
         $this->ajax_priv( 'p2i_connect_server', [ $this, 'connect_server'] );
         $this->ajax_priv( 'p2i_save_setting', [ $this, 'save_setting'] );
         $this->ajax_priv( 'disconnect_server', [ $this, 'disconnect_server'] );
+        $this->ajax_priv( 'p2i_save_image_media', [ $this, 'save_image_media'] );
     }
 
     public function generate_ai_image() {
@@ -168,7 +169,7 @@ class Ajax {
     }
 
 
-    function save_setting() {
+    public function save_setting() {
         if ( ! isset($_POST['_wpnonce']) || ! wp_verify_nonce($_POST['_wpnonce'], 'prompt2image_nonce') ) {
             wp_send_json_error('Invalid nonce');
         }
@@ -178,5 +179,57 @@ class Ajax {
         update_option('prompt2image-settings', $saved);
 
         wp_send_json_success('Settings saved successfully!');
+    }
+
+    public function save_image_media(){
+        check_ajax_referer( 'prompt2image_nonce', '_wpnonce' );
+
+        if ( empty( $_POST['image_data'] ) || empty( $_POST['filename'] ) ) {
+            wp_send_json_error( esc_html__( 'No image data received.', 'text-domain' ) );
+        }
+
+        $image_data = wp_unslash( $_POST['image_data'] ); // Decode slashes if present
+        $filename   = sanitize_file_name( wp_unslash( $_POST['filename'] ) );
+        $mime_type  = sanitize_text_field( $_POST['mime_type'] ?? 'image/png' );
+
+        // Decode base64
+        $decoded = base64_decode( $image_data );
+        if ( false === $decoded ) {
+            wp_send_json_error( esc_html__( 'Invalid base64 data.', 'text-domain' ) );
+        }
+
+        // Save to WordPress uploads
+        $upload = wp_upload_bits( $filename, null, $decoded );
+
+        if ( ! empty( $upload['error'] ) ) {
+            wp_send_json_error( esc_html( $upload['error'] ) );
+        }
+
+        // Prepare attachment data
+        $attachment = array(
+            'post_mime_type' => $mime_type,
+            'post_title'     => pathinfo( $filename, PATHINFO_FILENAME ),
+            'post_content'   => '',
+            'post_status'    => 'inherit',
+        );
+
+        // Insert attachment
+        $attach_id = wp_insert_attachment( $attachment, $upload['file'] );
+
+        if ( is_wp_error( $attach_id ) ) {
+            wp_send_json_error( esc_html( $attach_id->get_error_message() ) );
+        }
+
+        require_once ABSPATH . 'wp-admin/includes/image.php';
+
+        $attach_data = wp_generate_attachment_metadata( $attach_id, $upload['file'] );
+        wp_update_attachment_metadata( $attach_id, $attach_data );
+
+        wp_send_json_success(
+            array(
+                'url' => esc_url( wp_get_attachment_url( $attach_id ) ),
+                'id'  => absint( $attach_id ),
+            )
+        );
     }
 }

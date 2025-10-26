@@ -1,8 +1,5 @@
 jQuery(document).ready(function($) {
 
-    /**************************************
-     * 1. AI Image Generation UI & Modal
-     **************************************/
     if ($('body').hasClass('post-type-attachment')) {
 
         // Insert AI button next to Bulk Select
@@ -15,12 +12,13 @@ jQuery(document).ready(function($) {
             });
             $bulkButton.after($aiButton);
 
-            // Show modal on AI button click
-            $aiButton.on('click', function(){
+            // Show modal on button click
+            $aiButton.on('click', function() {
                 $('#prompt2image-text').val('');
                 $('#prompt2image-loader').hide();
                 $('#prompt2image-generate, #prompt2image-cancel').show();
                 $('#prompt2image-modal').fadeIn();
+                $('#gemini-output-single').html(''); // clear previous preview
             });
         }
 
@@ -30,14 +28,10 @@ jQuery(document).ready(function($) {
         });
 
         // Generate AI Image
-        $(document).on('click', '#prompt2image-generate', function(){
+        $(document).on('click', '#prompt2image-generate', function() {
             const userPrompt = $('#prompt2image-text').val().trim();
-            if (!userPrompt) { 
-                alert('Please enter a prompt!'); 
-                return; 
-            }
+            if (!userPrompt) { alert('Please enter a prompt!'); return; }
 
-            // Show loader & hide buttons
             $('#prompt2image-loader').show();
             $('#prompt2image-generate, #prompt2image-cancel').hide();
 
@@ -45,70 +39,97 @@ jQuery(document).ready(function($) {
                 action: 'generate_ai_image',
                 nonce: PROMPT2IMAGE.nonce,
                 prompt: userPrompt
-            }, function(response){
-                $('#prompt2image-loader').hide();
-                $('#prompt2image-generate, #prompt2image-cancel').show();
+            }, function(response) {
 
-                console.log( response );
+                // $('#prompt2image-loader').hide(); // keep modal open
+                 $('#prompt2image-modal').fadeOut();
 
-                renderGeminiResponse(response, userPrompt);
+                let html = '<div class="gemini-candidate">';
+                html += '<h4>AI Image Preview</h4>';
 
-                // Close modal after rendering
-                $('#prompt2image-modal').fadeOut();
-            });
-        });
-    }
+                if (response.success && response.data.candidates && response.data.candidates.length > 0) {
+                    const candidate = response.data.candidates[0];
+                    if (candidate.content && candidate.content.parts) {
+                        let foundImage = false;
 
+                        for (let i = 0; i < candidate.content.parts.length; i++) {
+                            const part = candidate.content.parts[i];
 
-    /**************************************
-     * 2. Render AI Response (Text + Images)
-     **************************************/
-    function renderGeminiResponse(response, prompt) {
-        let html = '<div class="gemini-generation" style="border:1px solid #ccc; padding:10px; margin-bottom:20px;">';
-        html += '<h3>Prompt: ' + prompt + '</h3>';
+                            if (part.inlineData && part.inlineData.data && part.inlineData.data.trim() !== '') {
+                                const base64Data = part.inlineData.data;
+                                const mimeType   = part.inlineData.mimeType;
+                                const filename   = 'ai-image.png';
 
-        if(response.success && response.data.candidates && response.data.candidates.length > 0){
-            response.data.candidates.forEach(function(candidate, candIndex){
-                html += '<div class="gemini-candidate" style="margin-bottom:15px;">';
-                html += '<h4>Candidate ' + (candIndex + 1) + ':</h4>';
+                                // Show image
+                                html += '<img src="data:' + mimeType + ';base64,' + base64Data + '" style="max-width:300px; margin-top:10px; display:block;">';
 
-                if(candidate.content && candidate.content.parts){
-                    candidate.content.parts.forEach(function(part, partIndex){
-                        // Text
-                        if(part.text){
-                            html += '<p>' + part.text + '</p>';
-                        }
+                                // Buttons: Save + Regenerate
+                                html += '<div style="margin-top:10px;">';
+                                html += '<button class="p2i-save-image button" data-base64="' + base64Data + '" data-mime="' + mimeType + '" data-filename="' + filename + '">Save to Media Library</button>';
+                                html += '<button class="p2i-regenerate-image button" style="margin-left:5px;">Regenerate Image</button>';
+                                html += '</div>';
 
-                        // Image
-                        if(part.inlineData && part.inlineData.data){
-                            if(part.inlineData.data.trim() !== ''){
-                                html += '<img src="data:' + part.inlineData.mimeType + ';base64,' + part.inlineData.data + '" style="max-width:400px; display:block; margin-top:10px;"/>';
-                                html += '<a href="data:' + part.inlineData.mimeType + ';base64,' + part.inlineData.data + '" download="ai-image-' + candIndex + '-' + partIndex + '.png" class="button" style="margin-top:5px; display:inline-block;">Download Image</a>';
-                            } else {
-                                html += '<p><em>Image data not available.</em></p>';
+                                foundImage = true;
+                                break; // show only first image
                             }
                         }
-                    });
+
+                        if (!foundImage) html += '<p>No image returned.</p>';
+                    }
+                } else {
+                    html += '<p>Error generating image.</p>';
                 }
 
                 html += '</div>';
+                $('#gemini-output-single').html(html);
+
+                $('html, body').animate({
+                    scrollTop: $('#gemini-output-single').offset().top - 100
+                }, 400);
+
             });
-        } else {
-            html += '<p>No output returned from AI.</p>';
-        }
+        });
 
-        html += '</div>';
+        // Save image to Media Library
+        $(document).on('click', '.p2i-save-image', function() {
+            const $btn = $(this);
+            const base64Data = $btn.data('base64');
+            const mimeType = $btn.data('mime');
+            const filename = $btn.data('filename');
 
-        // Append to history container
-        $('#gemini-output-history').prepend(html);
+            $btn.prop('disabled', true).text('Saving...');
 
-        // Scroll to latest output
-        $('html, body').animate({
-            scrollTop: $('#gemini-output-history').offset().top - 100
-        }, 600);
+            $.post(PROMPT2IMAGE.ajax_url, {
+                action: 'p2i_save_image_media',
+                _wpnonce: PROMPT2IMAGE.nonce,
+                image_data: base64Data,
+                mime_type: mimeType,
+                filename: filename
+            }, function(saveResp) {
+                if (saveResp.success && saveResp.data.url) {
+                    alert('Image saved! You can view it in Media Library.');
+                    window.location.reload();
+                } else {
+                    alert('Failed to save image.');
+                    $btn.prop('disabled', false).text('Save to Media Library');
+                }
+            });
+        });
+
+        // Regenerate button (reopen modal)
+        $(document).on('click', '.p2i-regenerate-image', function() {
+            $('#prompt2image-modal').fadeIn(); // Show modal again
+            $('#gemini-output-single').html(''); // Clear previous preview
+        });
+
     }
 
+});
 
+
+
+
+jQuery(document).ready(function($) {
     /**************************************
      * 3. Settings Form AJAX Submit
      **************************************/
