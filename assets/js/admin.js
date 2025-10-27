@@ -206,7 +206,7 @@ jQuery(document).ready(function ($) {
     $(document).on('click', '#confirm-connect', function (e) {
         e.preventDefault();
         const $btn = $(this);
-        const $loader = $('#server-connect-loader');
+        const $loader = $('#p2i-loader');
         const $btnText = $btn.find('.btn-text');
 
         $btn.prop('disabled', true);
@@ -232,14 +232,16 @@ jQuery(document).ready(function ($) {
     });
 
     $('#disconnect-server').on('click', function (e) {
+        $('#p2i-loader').fadeIn(150);
         e.preventDefault();
         $.post(PROMPT2IMAGE.ajax_url, {
             action: 'disconnect_server',
             _wpnonce: PROMPT2IMAGE.nonce,
         }).done(function (response) {
-            console.log(response);
+            $('#p2i-loader').fadeOut(150);
             window.location.reload();
         }).fail(function () {
+            $('#p2i-loader').fadeOut(150);
             alert('Disconnect failed. Please try again.');
         });
     });
