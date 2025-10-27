@@ -25,6 +25,8 @@ class Main {
      */
     public function head() {
         $google_gemeni = get_option( 'prompt2image-settings', [] );
+
+        
         // Helper::pri( $google_gemeni['api_key'] );
     }
 

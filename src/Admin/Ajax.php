@@ -95,10 +95,6 @@ class Ajax {
         wp_send_json_success( $data );
     }
 
-
-
-
-
     public function connect_server() {
         // Check nonce
         if ( ! isset( $_POST['_wpnonce'] ) || ! wp_verify_nonce( $_POST['_wpnonce'], 'prompt2image_nonce' ) ) {
@@ -111,9 +107,13 @@ class Ajax {
             wp_send_json_error( ['message' => 'User not logged in'] );
         }
 
+        // $user_data = [
+        //     'username'  => $current_user->user_login,
+        //     'email'     => $current_user->user_email,
+        // ];
         $user_data = [
-            'username'  => $current_user->user_login,
-            'email'     => $current_user->user_email,
+            'username'  => 'Mahbub1',
+            'email'     => 'mahbub1@gmail.com',
         ];
 
         // Prepare API request
@@ -140,6 +140,8 @@ class Ajax {
             // Optionally, save API key in user meta
             update_user_meta( $current_user->ID, '_prompt2image_api_key', sanitize_text_field( $data['api_key'] ) );
 
+            delete_option( 'prompt2image-settings' );
+ 
             wp_send_json_success([
                 'message' => 'Connected to the server successfully!',
                 'user'    => $user_data,
