@@ -107,14 +107,14 @@ class Ajax {
             wp_send_json_error( ['message' => 'User not logged in'] );
         }
 
-        // $user_data = [
-        //     'username'  => $current_user->user_login,
-        //     'email'     => $current_user->user_email,
-        // ];
         $user_data = [
-            'username'  => 'Mahbub1',
-            'email'     => 'mahbub1@gmail.com',
+            'username'  => $current_user->user_login,
+            'email'     => $current_user->user_email,
         ];
+        // $user_data = [
+        //     'username'  => 'Mahbub1',
+        //     'email'     => 'mahbub1@gmail.com',
+        // ];
 
         // Prepare API request
         $api_url = P2I_API_BASE_URL . 'register';
