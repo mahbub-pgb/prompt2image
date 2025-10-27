@@ -37,76 +37,109 @@ jQuery(document).ready(function ($) {
         });
 
         /** ===== Generate AI Image ===== */
-        $(document).on('click', '#prompt2image-generate', function () {
+        $(document).on('click', '#prompt2image-generate', function() {
             const userPrompt = $('#prompt2image-text').val().trim();
+            const fileInput = $('#prompt2image-upload')[0];
+            const formData = new FormData();
 
-            if (!userPrompt) {
-                alert('Please enter a prompt!');
+            if (!userPrompt && fileInput.files.length === 0) {
+                alert('Please enter a prompt or upload an image!');
                 return;
             }
 
-            lastPrompt = userPrompt;
+            formData.append('action', 'generate_ai_image');
+            formData.append('nonce', PROMPT2IMAGE.nonce);
+            formData.append('prompt', userPrompt);
+
+            if (fileInput.files.length > 0) {
+                formData.append('image', fileInput.files[0]);
+            }
 
             $('#p2i-loader').fadeIn(150);
             $('#prompt2image-generate, #prompt2image-cancel').hide();
             $('#prompt2image-text').prop('disabled', true);
 
-            $.post(PROMPT2IMAGE.ajax_url, {
-                action: 'generate_ai_image',
-                nonce: PROMPT2IMAGE.nonce,
-                prompt: userPrompt
-            }, function (response) {
-               $('#p2i-loader').fadeOut(150);
-                $('#prompt2image-modal').hide();
+            $.ajax({
+                url: PROMPT2IMAGE.ajax_url,
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    $('#p2i-loader').fadeOut(150);
+                    $('#prompt2image-modal').hide();
 
-                let html = '<div class="gemini-candidate">';
-                html += '<h3 style="margin-top:0;">AI Image Preview</h3>';
+                    if (response.success && response.data.body) {
+                        let body = {};
+                        try {
+                            body = JSON.parse(response.data.body);
+                        } catch (e) {
+                            alert('Invalid response format.');
+                            return;
+                        }
 
-                if (response.success && response.data.candidates && response.data.candidates.length > 0) {
-                    const candidate = response.data.candidates[0];
+                        // Parse Gemini response
+                        const candidate = body.candidates && body.candidates[0];
+                        if (candidate && candidate.content && candidate.content.parts) {
+                            let html = `
+                                <div class="gemini-result">
+                                    <h3>🎨 AI Generated Image</h3>
+                                    <div class="gemini-images" style="text-align:center; margin-top:10px;">
+                            `;
 
-                    if (candidate.content && candidate.content.parts) {
-                        let foundImage = false;
+                            candidate.content.parts.forEach(part => {
+                                if (part.inlineData && part.inlineData.data) {
+                                    const mimeType = part.inlineData.mimeType || 'image/png';
+                                    const base64Data = part.inlineData.data;
 
-                        candidate.content.parts.forEach(function (part) {
-                            if (part.inlineData && part.inlineData.data && part.inlineData.data.trim() !== '') {
-                                const base64Data = part.inlineData.data;
-                                const mimeType = part.inlineData.mimeType;
-                                const filename = 'ai-image.png';
+                                    html += `
+                                        <img 
+                                            src="data:${mimeType};base64,${base64Data}" 
+                                            alt="Generated Image" 
+                                            style="max-width:80%; border-radius:12px; box-shadow:0 4px 10px rgba(0,0,0,0.2); margin-top:15px;"
+                                        />
+                                    `;
+                                }
+                            });
 
-                                html += `
-                                    <img src="data:${mimeType};base64,${base64Data}" 
-                                         class="ai-preview-img"
-                                         style="max-width:50%; border-radius:8px; margin-top:10px; display:block; cursor:pointer; margin:auto;">
-                                    <div style="margin-top:15px; text-align:center;">
-                                        <button class="p2i-save-image button button-primary" 
-                                            data-base64="${base64Data}" 
-                                            data-mime="${mimeType}" 
-                                            data-filename="${filename}">
-                                            💾 Save to Media Library
-                                        </button>
-                                        <button class="p2i-regenerate-image button" style="margin-left:10px;">
-                                            🔄 Regenerate Image
-                                        </button>
+                            html += `
                                     </div>
-                                `;
-                                foundImage = true;
-                            }
-                        });
+                                    <div style="text-align:center; margin-top:15px;">
+                                        <button id="p2i-generate-again" class="button">🔄 Regenerate</button>
+                                        <button id="p2i-download-image" class="button button-primary">💾 Download</button>
+                                    </div>
+                                </div>
+                            `;
 
-                        if (!foundImage) html += '<p>No image returned.</p>';
+                            $('#prompt2image-result-body').html(html);
+                            $('#prompt2image-result-modal').fadeIn();
+
+                            // Download button functionality
+                            $('#p2i-download-image').on('click', function() {
+                                const link = document.createElement('a');
+                                link.href = `data:image/png;base64,${candidate.content.parts.find(p => p.inlineData)?.inlineData.data}`;
+                                link.download = 'generated-image.png';
+                                link.click();
+                            });
+                        } else {
+                            alert('No image data found in response.');
+                        }
+                    } else {
+                        alert('Image generation failed.');
                     }
 
-                } else {
-                    html += '<p>Error generating image.</p>';
+                    $('#prompt2image-generate, #prompt2image-cancel').show();
+                    $('#prompt2image-text').prop('disabled', false);
+                },
+                error: function(err) {
+                    $('#p2i-loader').fadeOut(150);
+                    alert('Error: ' + err.statusText);
                 }
-
-                html += '</div>';
-
-                $('#prompt2image-result-body').html(html);
-                $('#prompt2image-result-modal').fadeIn();
             });
+
         });
+
+
 
         /** ===== Save Image ===== */
         $(document).on('click', '.p2i-save-image', function () {

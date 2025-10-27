@@ -7,7 +7,7 @@ class Ajax {
     use Hook;
 
     public function __construct() {
-        $this->ajax_priv( 'generate_ai_image', [ $this, 'generate_image'] );
+        $this->ajax_priv( 'generate_ai_image', [ $this, 'generate_ai_image'] );
         $this->ajax_priv( 'p2i_connect_server', [ $this, 'connect_server'] );
         $this->ajax_priv( 'p2i_save_setting', [ $this, 'save_setting'] );
         $this->ajax_priv( 'disconnect_server', [ $this, 'disconnect_server'] );
@@ -44,7 +44,7 @@ class Ajax {
         // Return the image as base64 so it can be shown in browser
         wp_send_json_success( [
             'prompt' => $prompt,
-            'image'  => $image_data_url,
+            'image'  => $uploaded_image['tmp_name'],
         ] );
     }
 
@@ -54,57 +54,63 @@ class Ajax {
      * @return void
      */
     public function generate_ai_image() {
-
-        // Verify AJAX nonce for security.
+        // Verify AJAX nonce
         check_ajax_referer( 'prompt2image_nonce', 'nonce' );
 
-        // Get and sanitize the prompt from POST.
         $prompt = sanitize_text_field( $_POST['prompt'] ?? '' );
-        if ( empty( $prompt ) ) {
-            wp_send_json_error( esc_html__( 'Prompt is empty', 'prompt2image' ) );
-        }
 
-        // Get current user.
-        $current_user = wp_get_current_user();
+        // Check for uploaded image
+        $image_url = '';
+        if ( ! empty( $_FILES['image']['tmp_name'] ) ) {
+            $uploaded_file = $_FILES['image'];
 
-        // Retrieve API key from plugin settings.
-        $settings = get_option( 'prompt2image-settings', [] );
-        $api_key  = $settings['api_key'] ?? '';
-
-        // If API key is empty, try to get it from the current user's meta.
-        if ( empty( $api_key ) && $current_user->ID ) {
-            $api_key = get_user_meta( $current_user->ID, '_prompt2image_api_key', true );
-
-            // Optionally, update user meta if a new API key is provided.
-            if ( ! empty( $_POST['api_key'] ) ) {
-                $api_key = sanitize_text_field( wp_unslash( $_POST['api_key'] ) );
-                update_user_meta( $current_user->ID, '_prompt2image_api_key', $api_key );
+            $file_type = wp_check_filetype( $uploaded_file['name'] );
+            if ( strpos( $file_type['type'], 'image' ) === false ) {
+                wp_send_json_error( esc_html__( 'Uploaded file is not a valid image.', 'prompt2image' ) );
             }
+
+            // // Upload image to WordPress media
+            // require_once ABSPATH . 'wp-admin/includes/file.php';
+            // require_once ABSPATH . 'wp-admin/includes/media.php';
+            // require_once ABSPATH . 'wp-admin/includes/image.php';
+
+            // $attachment_id = media_handle_upload( 'image', 0 ); // 0 = no parent post
+            // if ( is_wp_error( $attachment_id ) ) {
+            //     wp_send_json_error( esc_html__( 'Failed to upload image.', 'prompt2image' ) );
+            // }
+
+            // $image_url = wp_get_attachment_url( $attachment_id );
         }
 
-        // If API key is still empty, return an error.
+        if ( empty( $prompt ) && empty( $image_url ) ) {
+            wp_send_json_error( esc_html__( 'Prompt and image cannot both be empty.', 'prompt2image' ) );
+        }
+
+        // Add image URL to prompt if exists
+        if ( $image_url ) {
+            $prompt .= " Refer to this image: $image_url";
+        }
+
+        // Get API key
+        $settings = get_option( 'prompt2image-settings', [] );
+        $api_key  = 'AIzaSyBNXcqRubHqWorc2fA2fJm9lw9Ex4SZJa8';
         if ( empty( $api_key ) ) {
-            wp_send_json_error( esc_html__( 'API key is missing. Please connect to your server or provide an API key.', 'prompt2image' ) );
+            wp_send_json_error( esc_html__( 'API key is missing.', 'prompt2image' ) );
         }
 
-        // Google Gemini API endpoint.
+        // Google Gemini API endpoint
         $url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-preview-image-generation:generateContent';
 
-        // Prepare request body.
+        // Prepare request body (text only)
         $body = [
-            'contents'         => [
-                [
-                    'parts' => [
-                        [ 'text' => $prompt ],
-                    ],
-                ],
+            'contents' => [
+                [ 'parts' => [ [ 'text' => $prompt ] ] ]
             ],
             'generationConfig' => [
-                'responseModalities' => [ 'TEXT', 'IMAGE' ],
-            ],
+                'responseModalities' => [ 'IMAGE', 'TEXT' ]
+            ]
         ];
 
-        // Send request to Google Gemini API.
         $response = wp_remote_post(
             $url,
             [
@@ -117,17 +123,18 @@ class Ajax {
             ]
         );
 
-        // Handle errors.
+        wp_send_json_success( $response );
+
         if ( is_wp_error( $response ) ) {
             wp_send_json_error( esc_html( $response->get_error_message() ) );
         }
 
-        // Decode API response.
         $data = json_decode( wp_remote_retrieve_body( $response ), true );
 
-        // Return success response.
         wp_send_json_success( $data );
     }
+
+
 
     public function connect_server() {
         // Check nonce

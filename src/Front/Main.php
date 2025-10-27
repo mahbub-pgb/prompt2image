@@ -24,10 +24,12 @@ class Main {
      * Add custom HTML or meta in <head>
      */
     public function head() {
-        $google_gemeni = get_option( 'prompt2image-settings', [] );
+        // $google_gemeni = get_option( 'prompt2image-settings', [] );
+
+        // $settings = get_option( 'prompt2image-settings', [] );
 
         
-        // Helper::pri( $google_gemeni['api_key'] );
+        // Helper::pri( $settings );
     }
 
     /**
