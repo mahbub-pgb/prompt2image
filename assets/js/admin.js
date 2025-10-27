@@ -1,10 +1,18 @@
 jQuery(document).ready(function ($) {
+
+    /** =========================
+     * 1. Variables
+     * ========================= */
     let lastPrompt = '';
 
+    /** =========================
+     * 2. Only on attachment post type
+     * ========================= */
     if ($('body').hasClass('post-type-attachment')) {
 
-        /** ============ Add AI Button ============ **/
+        /** ===== Add AI Button ===== */
         const $bulkButton = $('.select-mode-toggle-button');
+
         if ($bulkButton.length && $('.prompt2image-btn').length === 0) {
             const $aiButton = $('<button/>', {
                 type: 'button',
@@ -19,17 +27,19 @@ jQuery(document).ready(function ($) {
                 $('#prompt2image-generate, #prompt2image-cancel').show();
                 $('#prompt2image-modal').fadeIn();
                 $('#gemini-output-single').html('');
+                $('#prompt2image-text').prop('disabled', false);
             });
         }
 
-        /** ============ Cancel modal ============ **/
+        /** ===== Cancel Modal ===== */
         $(document).on('click', '#prompt2image-cancel, #prompt2image-modal .prompt2image-overlay', function () {
             $('#prompt2image-modal').fadeOut();
         });
 
-        /** ============ Generate AI Image ============ **/
+        /** ===== Generate AI Image ===== */
         $(document).on('click', '#prompt2image-generate', function () {
             const userPrompt = $('#prompt2image-text').val().trim();
+
             if (!userPrompt) {
                 alert('Please enter a prompt!');
                 return;
@@ -54,17 +64,16 @@ jQuery(document).ready(function ($) {
 
                 if (response.success && response.data.candidates && response.data.candidates.length > 0) {
                     const candidate = response.data.candidates[0];
+
                     if (candidate.content && candidate.content.parts) {
                         let foundImage = false;
 
-                        for (let i = 0; i < candidate.content.parts.length; i++) {
-                            const part = candidate.content.parts[i];
+                        candidate.content.parts.forEach(function (part) {
                             if (part.inlineData && part.inlineData.data && part.inlineData.data.trim() !== '') {
                                 const base64Data = part.inlineData.data;
                                 const mimeType = part.inlineData.mimeType;
                                 const filename = 'ai-image.png';
 
-                                // Image + buttons
                                 html += `
                                     <img src="data:${mimeType};base64,${base64Data}" 
                                          class="ai-preview-img"
@@ -82,25 +91,24 @@ jQuery(document).ready(function ($) {
                                     </div>
                                 `;
                                 foundImage = true;
-                                break;
                             }
-                        }
+                        });
 
                         if (!foundImage) html += '<p>No image returned.</p>';
                     }
+
                 } else {
                     html += '<p>Error generating image.</p>';
                 }
 
                 html += '</div>';
 
-                // Show inside result modal
                 $('#prompt2image-result-body').html(html);
                 $('#prompt2image-result-modal').fadeIn();
             });
         });
 
-        /** ============ Save image ============ **/
+        /** ===== Save Image ===== */
         $(document).on('click', '.p2i-save-image', function () {
             const $btn = $(this);
             const base64Data = $btn.data('base64');
@@ -130,7 +138,7 @@ jQuery(document).ready(function ($) {
             });
         });
 
-        /** ============ Regenerate ============ **/
+        /** ===== Regenerate Image ===== */
         $(document).on('click', '.p2i-regenerate-image', function () {
             $('#prompt2image-result-modal').fadeOut();
             $('#gemini-output-single').html('');
@@ -138,9 +146,12 @@ jQuery(document).ready(function ($) {
             $('#prompt2image-generate, #prompt2image-cancel').fadeIn();
             $('#prompt2image-text').prop('disabled', false).val(lastPrompt);
         });
+
     }
 
-    /** ============ Image Preview Modal ============ **/
+    /** =========================
+     * 3. Image Preview Modal
+     * ========================= */
     $(document).on('click', '.ai-preview-img', function () {
         const src = $(this).attr('src');
         $('#gemini-preview-modal img').attr('src', src);
@@ -153,46 +164,46 @@ jQuery(document).ready(function ($) {
         }
     });
 
-    // Close when clicking the close button(s)
+    /** Close result modal */
     $(document).on('click', '.prompt2image-result-close, .close-preview', function (e) {
         e.preventDefault();
         $('#prompt2image-result-modal, #gemini-preview-modal').fadeOut();
     });
-});
 
-jQuery(document).ready(function($) {
-    /**************************************
-     * 3. Settings Form AJAX Submit
-     **************************************/
-    $(document).on('submit', '#prompt2image-settings-form', function(e){
+    /** =========================
+     * 4. Settings Form AJAX Submit
+     * ========================= */
+    $(document).on('submit', '#prompt2image-settings-form', function (e) {
         e.preventDefault();
-         $('#p2i-loader').fadeIn();
+        $('#p2i-loader').fadeIn();
+
         let formData = $(this).serialize();
         formData += '&action=p2i_save_setting&_wpnonce=' + encodeURIComponent(PROMPT2IMAGE.nonce);
 
-        $.post(PROMPT2IMAGE.ajax_url, formData, function(response){
-            console.log(response);
-        }).fail(function(){
-            alert('Connection failed. Please try again.');
-        }).always(function(){
-            // Hide loader after request finishes
-            $('#p2i-loader').fadeOut();
-        });
+        $.post(PROMPT2IMAGE.ajax_url, formData)
+            .done(function (response) {
+                console.log(response);
+            })
+            .fail(function () {
+                alert('Connection failed. Please try again.');
+            })
+            .always(function () {
+                $('#p2i-loader').fadeOut();
+            });
     });
 
-
-    /**************************************
-     * 4. Server Connect / Disconnect
-     **************************************/
-    $('#connect-server').on('click', function(){
+    /** =========================
+     * 5. Server Connect / Disconnect
+     * ========================= */
+    $('#connect-server').on('click', function () {
         $('#server-connect-modal').fadeIn(200);
     });
 
-    $('#cancel-connect').on('click', function(){
+    $('#cancel-connect').on('click', function () {
         $('#server-connect-modal').fadeOut(200);
     });
 
-    $(document).on('click', '#confirm-connect', function(e){
+    $(document).on('click', '#confirm-connect', function (e) {
         e.preventDefault();
         const $btn = $(this);
         const $loader = $('#server-connect-loader');
@@ -205,14 +216,14 @@ jQuery(document).ready(function($) {
         $.post(PROMPT2IMAGE.ajax_url, {
             action: 'p2i_connect_server',
             _wpnonce: PROMPT2IMAGE.nonce,
-        }, function(response){
-            setTimeout(function() {
+        }).done(function (response) {
+            setTimeout(function () {
                 $btnText.text('✅ Connected');
                 $('#connect-server').text('✅ Connected');
                 $loader.fadeOut(150);
-                window.location.reload();                
+                window.location.reload();
             }, 500);
-        }).fail(function(){
+        }).fail(function () {
             $loader.fadeOut(150);
             $btn.prop('disabled', false);
             $btnText.text('Connect');
@@ -220,24 +231,23 @@ jQuery(document).ready(function($) {
         });
     });
 
-    $('#disconnect-server').on('click', function(e) {
+    $('#disconnect-server').on('click', function (e) {
         e.preventDefault();
         $.post(PROMPT2IMAGE.ajax_url, {
             action: 'disconnect_server',
             _wpnonce: PROMPT2IMAGE.nonce,
-        }, function(response){
+        }).done(function (response) {
             console.log(response);
-            window.location.reload(); 
-        }).fail(function(){
+            window.location.reload();
+        }).fail(function () {
             alert('Disconnect failed. Please try again.');
         });
     });
 
-
-    /**************************************
-     * 5. Toggle API Key Visibility
-     **************************************/
-    $('#toggle-api-key').on('click', function() {
+    /** =========================
+     * 6. Toggle API Key Visibility
+     * ========================= */
+    $('#toggle-api-key').on('click', function () {
         const $input = $('#api_key');
         const type = $input.attr('type') === 'password' ? 'text' : 'password';
         $input.attr('type', type);
