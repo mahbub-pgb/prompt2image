@@ -15,16 +15,27 @@ class Ajax {
     }
 
     public function generate_ai_image() {
+        // Verify AJAX nonce for security
         check_ajax_referer('prompt2image_nonce', 'nonce');
 
+        // Get and sanitize the prompt from POST
         $prompt = sanitize_text_field($_POST['prompt'] ?? '');
         if (empty($prompt)) {
             wp_send_json_error('Prompt is empty');
         }
 
-        $api_key = 'AIzaSyBNXcqRubHqWorc2fA2fJm9lw9Ex4SZJa8';
+        // Retrieve API key from plugin settings
+        $settings = get_option('prompt2image-settings', []);
+        $api_key  = $settings['api_key'] ?? '';
+
+        if (empty($api_key)) {
+            wp_send_json_error('API key is missing');
+        }
+
+        // Google Gemini API URL
         $url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-preview-image-generation:generateContent";
 
+        // Prepare request body
         $body = [
             "contents" => [
                 [
@@ -38,23 +49,28 @@ class Ajax {
             ]
         ];
 
+        // Send request to Google Gemini API
         $response = wp_remote_post($url, [
             'headers' => [
-                'Content-Type' => 'application/json',
-                'X-goog-api-key' => $api_key
+                'Content-Type'   => 'application/json',
+                'X-goog-api-key' => $api_key,
             ],
-            'body' => json_encode($body),
-            'timeout' => 120
+            'body'    => wp_json_encode($body),
+            'timeout' => 120,
         ]);
 
+        // Handle errors
         if (is_wp_error($response)) {
             wp_send_json_error($response->get_error_message());
         }
 
+        // Decode API response
         $data = json_decode(wp_remote_retrieve_body($response), true);
 
+        // Return success response
         wp_send_json_success($data);
     }
+
 
 
     public function connect_server() {
