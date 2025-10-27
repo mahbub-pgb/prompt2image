@@ -85,13 +85,6 @@ class Main {
                         style="width:100%; height:100px; padding:10px; margin-bottom:10px;"
                         placeholder="<?php esc_attr_e( 'Enter prompt here...', 'prompt2image' ); ?>"></textarea>
 
-                    <!-- Loader -->
-                    <div id="prompt2image-loader"
-                        style="display:none; text-align:center; margin-bottom:10px;">
-                        <div class="p2i-spinner"></div>
-                        <p><?php esc_html_e( 'Generating AI image, please wait...', 'prompt2image' ); ?></p>
-                    </div>
-
                     <div style="text-align:right;">
                         <button id="prompt2image-generate" class="button">
                             <?php esc_html_e( 'Generate', 'prompt2image' ); ?>

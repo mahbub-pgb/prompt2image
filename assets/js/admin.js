@@ -47,7 +47,7 @@ jQuery(document).ready(function ($) {
 
             lastPrompt = userPrompt;
 
-            $('#prompt2image-loader').show();
+            $('#p2i-loader').fadeIn(150);
             $('#prompt2image-generate, #prompt2image-cancel').hide();
             $('#prompt2image-text').prop('disabled', true);
 
@@ -56,7 +56,7 @@ jQuery(document).ready(function ($) {
                 nonce: PROMPT2IMAGE.nonce,
                 prompt: userPrompt
             }, function (response) {
-                $('#prompt2image-loader').hide();
+               $('#p2i-loader').fadeOut(150);
                 $('#prompt2image-modal').hide();
 
                 let html = '<div class="gemini-candidate">';
@@ -116,7 +116,7 @@ jQuery(document).ready(function ($) {
             const filename = $btn.data('filename');
 
             $btn.prop('disabled', true).text('Saving...');
-            $('#prompt2image-loader').show();
+            $('#p2i-loader').fadeIn(150);
 
             $.post(PROMPT2IMAGE.ajax_url, {
                 action: 'p2i_save_image_media',
@@ -125,10 +125,9 @@ jQuery(document).ready(function ($) {
                 mime_type: mimeType,
                 filename: filename
             }, function (saveResp) {
-                $('#prompt2image-loader').hide();
+                $('#p2i-loader').fadeOut(150);
 
                 if (saveResp.success && saveResp.data.url) {
-                    alert('Image saved! You can view it in Media Library.');
                     $('#prompt2image-result-modal').fadeOut();
                     window.location.reload();
                 } else {
