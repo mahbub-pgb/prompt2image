@@ -160,5 +160,11 @@ class Main {
             </div>
             <?php
         endif;
+
+        ?>
+        <div id="p2i-loader" style="display:none;">
+            <div class="p2i-spinner"></div>
+        </div>
+        <?php 
     }
 }

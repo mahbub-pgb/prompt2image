@@ -24,7 +24,8 @@ class Main {
      * Add custom HTML or meta in <head>
      */
     public function head() {
-        // Helper::pri( P2I_PLUGIN_URL );
+        $google_gemeni = get_option( 'prompt2image-settings', [] );
+        Helper::pri( $google_gemeni );
     }
 
     /**

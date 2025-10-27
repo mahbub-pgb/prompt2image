@@ -172,7 +172,7 @@ jQuery(document).ready(function($) {
      **************************************/
     $(document).on('submit', '#prompt2image-settings-form', function(e){
         e.preventDefault();
-
+         $('#p2i-loader').fadeIn();
         let formData = $(this).serialize();
         formData += '&action=p2i_save_setting&_wpnonce=' + encodeURIComponent(PROMPT2IMAGE.nonce);
 
@@ -180,6 +180,9 @@ jQuery(document).ready(function($) {
             console.log(response);
         }).fail(function(){
             alert('Connection failed. Please try again.');
+        }).always(function(){
+            // Hide loader after request finishes
+            $('#p2i-loader').fadeOut();
         });
     });
 
