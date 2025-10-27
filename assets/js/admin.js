@@ -160,12 +160,6 @@ jQuery(document).ready(function ($) {
     });
 });
 
-
-
-
-
-
-
 jQuery(document).ready(function($) {
     /**************************************
      * 3. Settings Form AJAX Submit

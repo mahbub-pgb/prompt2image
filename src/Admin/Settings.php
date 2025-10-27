@@ -102,7 +102,8 @@ class Settings {
                         <input 
                             type="password" 
                             id="api_key" 
-                            name="prompt2image[api_key]" 
+                            name="prompt2image[api_key]"
+                            required 
                             value="<?php echo esc_attr( $google_gemeni['api_key'] ?? '' ); ?>" 
                         >
                         
