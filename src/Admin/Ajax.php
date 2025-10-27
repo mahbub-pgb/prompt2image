@@ -7,11 +7,45 @@ class Ajax {
     use Hook;
 
     public function __construct() {
-        $this->ajax_priv( 'generate_ai_image', [ $this, 'generate_ai_image'] );
+        $this->ajax_priv( 'generate_ai_image', [ $this, 'generate_image'] );
         $this->ajax_priv( 'p2i_connect_server', [ $this, 'connect_server'] );
         $this->ajax_priv( 'p2i_save_setting', [ $this, 'save_setting'] );
         $this->ajax_priv( 'disconnect_server', [ $this, 'disconnect_server'] );
         $this->ajax_priv( 'p2i_save_image_media', [ $this, 'save_image_media'] );
+    }
+
+    public function generate_image() {
+        // Verify AJAX nonce
+        check_ajax_referer( 'prompt2image_nonce', 'nonce' );
+
+        $prompt = sanitize_text_field( $_POST['prompt'] ?? '' );
+
+        // Check for uploaded file
+        $uploaded_image = $_FILES['image'] ?? null;
+        $image_data_url = null;
+
+        if ( $uploaded_image && ! empty( $uploaded_image['tmp_name'] ) ) {
+            $file_type = wp_check_filetype( $uploaded_image['name'] );
+            if ( strpos( $file_type['type'], 'image' ) !== false ) {
+                $image_content = file_get_contents( $uploaded_image['tmp_name'] );
+                $base64_image = base64_encode( $image_content );
+
+                // Prepare a data URL for browser display
+                $image_data_url = 'data:' . $file_type['type'] . ';base64,' . $base64_image;
+            } else {
+                wp_send_json_error( esc_html__( 'Uploaded file is not a valid image.', 'prompt2image' ) );
+            }
+        }
+
+        if ( empty( $prompt ) && empty( $image_data_url ) ) {
+            wp_send_json_error( esc_html__( 'Prompt and image cannot both be empty.', 'prompt2image' ) );
+        }
+
+        // Return the image as base64 so it can be shown in browser
+        wp_send_json_success( [
+            'prompt' => $prompt,
+            'image'  => $image_data_url,
+        ] );
     }
 
     /**
