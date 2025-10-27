@@ -2,6 +2,7 @@
 namespace Prompt2Image\Front;
 
 use Prompt2Image\Trait\Hook;
+use Prompt2Image\Class\Helper;
 
 if ( ! defined( 'ABSPATH' ) ) {
     exit; // Exit if accessed directly
@@ -23,7 +24,7 @@ class Main {
      * Add custom HTML or meta in <head>
      */
     public function head() {
-        // pri( P2I_PLUGIN_URL . '/src/functions.php' );
+        // Helper::pri( P2I_PLUGIN_URL );
     }
 
     /**
