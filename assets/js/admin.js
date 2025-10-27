@@ -77,7 +77,7 @@ jQuery(document).ready(function ($) {
                                 html += `
                                     <img src="data:${mimeType};base64,${base64Data}" 
                                          class="ai-preview-img"
-                                         style="max-width:100%; border-radius:8px; margin-top:10px; display:block; cursor:pointer; margin:auto;">
+                                         style="max-width:50%; border-radius:8px; margin-top:10px; display:block; cursor:pointer; margin:auto;">
                                     <div style="margin-top:15px; text-align:center;">
                                         <button class="p2i-save-image button button-primary" 
                                             data-base64="${base64Data}" 
