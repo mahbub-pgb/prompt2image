@@ -69,14 +69,9 @@ class Ajax {
             wp_send_json_error( ['message' => 'User not logged in'] );
         }
 
-        // $user_data = [
-        //     'username'  => $current_user->user_login,
-        //     'email'     => $current_user->user_email,
-        // ];
-
         $user_data = [
-            'username'  => 'ma',
-            'email'     => 'ma1@gmail.com',
+            'username'  => $current_user->user_login,
+            'email'     => $current_user->user_email,
         ];
 
         // Prepare API request
