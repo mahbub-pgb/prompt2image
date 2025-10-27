@@ -14,62 +14,88 @@ class Ajax {
         $this->ajax_priv( 'p2i_save_image_media', [ $this, 'save_image_media'] );
     }
 
+    /**
+     * Handle AJAX request to generate AI image using Google Gemini API.
+     *
+     * @return void
+     */
     public function generate_ai_image() {
-        // Verify AJAX nonce for security
-        check_ajax_referer('prompt2image_nonce', 'nonce');
 
-        // Get and sanitize the prompt from POST
-        $prompt = sanitize_text_field($_POST['prompt'] ?? '');
-        if (empty($prompt)) {
-            wp_send_json_error('Prompt is empty');
+        // Verify AJAX nonce for security.
+        check_ajax_referer( 'prompt2image_nonce', 'nonce' );
+
+        // Get and sanitize the prompt from POST.
+        $prompt = sanitize_text_field( $_POST['prompt'] ?? '' );
+        if ( empty( $prompt ) ) {
+            wp_send_json_error( esc_html__( 'Prompt is empty', 'prompt2image' ) );
         }
 
-        // Retrieve API key from plugin settings
-        $settings = get_option('prompt2image-settings', []);
+        // Get current user.
+        $current_user = wp_get_current_user();
+
+        // Retrieve API key from plugin settings.
+        $settings = get_option( 'prompt2image-settings', [] );
         $api_key  = $settings['api_key'] ?? '';
 
-        if (empty($api_key)) {
-            wp_send_json_error('API key is missing');
+        // If API key is empty, try to get it from the current user's meta.
+        if ( empty( $api_key ) && $current_user->ID ) {
+            $api_key = get_user_meta( $current_user->ID, '_prompt2image_api_key', true );
+
+            // Optionally, update user meta if a new API key is provided.
+            if ( ! empty( $_POST['api_key'] ) ) {
+                $api_key = sanitize_text_field( wp_unslash( $_POST['api_key'] ) );
+                update_user_meta( $current_user->ID, '_prompt2image_api_key', $api_key );
+            }
         }
 
-        // Google Gemini API URL
-        $url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-preview-image-generation:generateContent";
+        // If API key is still empty, return an error.
+        if ( empty( $api_key ) ) {
+            wp_send_json_error( esc_html__( 'API key is missing. Please connect to your server or provide an API key.', 'prompt2image' ) );
+        }
 
-        // Prepare request body
+        // Google Gemini API endpoint.
+        $url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-preview-image-generation:generateContent';
+
+        // Prepare request body.
         $body = [
-            "contents" => [
+            'contents'         => [
                 [
-                    "parts" => [
-                        ["text" => $prompt]
-                    ]
-                ]
+                    'parts' => [
+                        [ 'text' => $prompt ],
+                    ],
+                ],
             ],
-            "generationConfig" => [
-                "responseModalities" => ["TEXT", "IMAGE"]
-            ]
+            'generationConfig' => [
+                'responseModalities' => [ 'TEXT', 'IMAGE' ],
+            ],
         ];
 
-        // Send request to Google Gemini API
-        $response = wp_remote_post($url, [
-            'headers' => [
-                'Content-Type'   => 'application/json',
-                'X-goog-api-key' => $api_key,
-            ],
-            'body'    => wp_json_encode($body),
-            'timeout' => 120,
-        ]);
+        // Send request to Google Gemini API.
+        $response = wp_remote_post(
+            $url,
+            [
+                'headers' => [
+                    'Content-Type'   => 'application/json',
+                    'X-goog-api-key' => $api_key,
+                ],
+                'body'    => wp_json_encode( $body ),
+                'timeout' => 120,
+            ]
+        );
 
-        // Handle errors
-        if (is_wp_error($response)) {
-            wp_send_json_error($response->get_error_message());
+        // Handle errors.
+        if ( is_wp_error( $response ) ) {
+            wp_send_json_error( esc_html( $response->get_error_message() ) );
         }
 
-        // Decode API response
-        $data = json_decode(wp_remote_retrieve_body($response), true);
+        // Decode API response.
+        $data = json_decode( wp_remote_retrieve_body( $response ), true );
 
-        // Return success response
-        wp_send_json_success($data);
+        // Return success response.
+        wp_send_json_success( $data );
     }
+
+
 
 
 
