@@ -91,7 +91,7 @@ class Main {
                         <input type="file" id="prompt2image-upload" accept="image/*">
                     </div>
 
-                    <div style="text-align:right;">
+                    <div class="modal-buttons">
                         <button id="prompt2image-generate" class="button">
                             <?php esc_html_e( 'Generate', 'prompt2image' ); ?>
                         </button>
