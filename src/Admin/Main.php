@@ -81,9 +81,15 @@ class Main {
 
                     <h2><?php esc_html_e( 'Generate AI Image', 'prompt2image' ); ?></h2>
 
-                    <textarea id="prompt2image-text"
-                        style="width:100%; height:100px; padding:10px; margin-bottom:10px;"
-                        placeholder="<?php esc_attr_e( 'Enter prompt here...', 'prompt2image' ); ?>"></textarea>
+                   
+
+                    <div class="prompt2image-inputs">
+                        <label for="prompt2image-text"><?php esc_html_e('Enter prompt:', 'prompt2image'); ?></label>
+                        <textarea id="prompt2image-text" style="width:100%; height:100px; padding:10px; margin-bottom:10px;" placeholder="<?php esc_attr_e('Describe your image here...', 'prompt2image'); ?>"></textarea>
+
+                        <label for="prompt2image-upload"><?php esc_html_e('Or upload an image (optional):', 'prompt2image'); ?></label>
+                        <input type="file" id="prompt2image-upload" accept="image/*">
+                    </div>
 
                     <div style="text-align:right;">
                         <button id="prompt2image-generate" class="button">
