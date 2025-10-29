@@ -252,15 +252,57 @@
     margin-top: 10px;
 }
 
-/* Connected/Disconnected Buttons */
-.button-connected { background-color: #46b450 !important; color: #fff !important; }
-.button-connected:hover { background-color: #3a9e3e !important; }
-.button-disconnect { background-color: #dc3232 !important; color: #fff !important; }
-.button-disconnect:hover { background-color: #b52a2a !important; }
+.button-connected {
+    background-color: #46b450;
+    color: #fff;
+    border: none;
+    padding: 10px 25px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: default;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
 
-/* Optional: Connect button */
-.button-connect { background-color: #0073aa; color: #fff; }
-.button-connect:hover { background-color: #006799; }
+.button-connected:hover {
+    background-color: #3a9e3e;
+    transform: translateY(-1px);
+}
+
+
+.button-disconnect {
+    background-color: #f28b82 !important; /* Material red for danger */
+    color: #fff !important;
+    border: none;
+    padding: 12px 28px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 12px rgba(229, 57, 53, 0.3);
+    transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.button-disconnect:hover {
+    background-color: #c62828; /* darker red on hover */
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(198, 40, 40, 0.4);
+}
+
+.button-disconnect:active {
+    transform: translateY(0);
+    box-shadow: 0 3px 6px rgba(229, 57, 53, 0.3);
+}
+
+
+.button-connect {
+    background-color: #0073aa;
+    color: #fff;
+    border: none;
+    padding:
+
 
 /* Gemini output styling */
 #gemini-output p { font-size: 16px; margin-bottom: 10px; }
@@ -595,42 +637,3 @@ input:checked + .slider:before {
     background-color: #005880;
 }
 
-/* Connect button */
-.button-connect {
-    background-color: #00a0d2;
-    color: #fff;
-    border-radius: 6px;
-    padding: 10px 25px;
-    font-size: 14px;
-    border: none;
-    cursor: pointer;
-    transition: background 0.3s;
-}
-
-.button-connect:hover {
-    background-color: #0073aa;
-}
-
-/* Connected / Disconnect buttons */
-.button-connected {
-    background-color: #46b450;
-    color: #fff;
-    border-radius: 6px;
-    padding: 10px 25px;
-    border: none;
-    margin-right: 10px;
-    cursor: default;
-}
-
-.button-disconnect {
-    background-color: #d63638;
-    color: #fff;
-    border-radius: 6px;
-    padding: 10px 25px;
-    border: none;
-    cursor: pointer;
-}
-
-.button-disconnect:hover {
-    background-color: #a32c2f;
-}
