@@ -4,9 +4,12 @@ jQuery(document).ready(function ($) {
      * 1. Variables
      * ========================= */
     let lastPrompt = '';
+    const $apiKeyInput = $('#api_key');
+    const $apiKeyWrap = $('#api-key-input-wrap');
+    const $toggleSwitch = $('#show-api-key-input');
 
     /** =========================
-     * 2. Only on attachment post type
+     * 2. AI Image Generation (only for attachment post type)
      * ========================= */
     if ($('body').hasClass('post-type-attachment')) {
 
@@ -56,18 +59,16 @@ jQuery(document).ready(function ($) {
                 nonce: PROMPT2IMAGE.nonce,
                 prompt: userPrompt
             }, function (response) {
-               $('#p2i-loader').fadeOut(150);
+                $('#p2i-loader').fadeOut(150);
                 $('#prompt2image-modal').hide();
 
-                let html = '<div class="gemini-candidate">';
-                html += '<h3 style="margin-top:0;">AI Image Preview</h3>';
+                let html = '<div class="gemini-candidate"><h3 style="margin-top:0;">AI Image Preview</h3>';
 
                 if (response.success && response.data.candidates && response.data.candidates.length > 0) {
                     const candidate = response.data.candidates[0];
+                    let foundImage = false;
 
                     if (candidate.content && candidate.content.parts) {
-                        let foundImage = false;
-
                         candidate.content.parts.forEach(function (part) {
                             if (part.inlineData && part.inlineData.data && part.inlineData.data.trim() !== '') {
                                 const base64Data = part.inlineData.data;
@@ -102,13 +103,12 @@ jQuery(document).ready(function ($) {
                 }
 
                 html += '</div>';
-
                 $('#prompt2image-result-body').html(html);
                 $('#prompt2image-result-modal').fadeIn();
             });
         });
 
-        /** ===== Save Image ===== */
+        /** ===== Save Image to Media Library ===== */
         $(document).on('click', '.p2i-save-image', function () {
             const $btn = $(this);
             const base64Data = $btn.data('base64');
@@ -126,7 +126,6 @@ jQuery(document).ready(function ($) {
                 filename: filename
             }, function (saveResp) {
                 $('#p2i-loader').fadeOut(150);
-
                 if (saveResp.success && saveResp.data.url) {
                     $('#prompt2image-result-modal').fadeOut();
                     window.location.reload();
@@ -163,7 +162,6 @@ jQuery(document).ready(function ($) {
         }
     });
 
-    /** Close result modal */
     $(document).on('click', '.prompt2image-result-close, .close-preview', function (e) {
         e.preventDefault();
         $('#prompt2image-result-modal, #gemini-preview-modal').fadeOut();
@@ -181,7 +179,8 @@ jQuery(document).ready(function ($) {
 
         $.post(PROMPT2IMAGE.ajax_url, formData)
             .done(function (response) {
-                console.log(response);
+                // console.log(response);
+                window.location.reload();
             })
             .fail(function () {
                 alert('Connection failed. Please try again.');
@@ -231,8 +230,9 @@ jQuery(document).ready(function ($) {
     });
 
     $('#disconnect-server').on('click', function (e) {
-        $('#p2i-loader').fadeIn(150);
         e.preventDefault();
+        $('#p2i-loader').fadeIn(150);
+
         $.post(PROMPT2IMAGE.ajax_url, {
             action: 'disconnect_server',
             _wpnonce: PROMPT2IMAGE.nonce,
@@ -246,39 +246,34 @@ jQuery(document).ready(function ($) {
     });
 
     /** =========================
-     * 6. Toggle API Key Visibility
+     * 6. Toggle Password Visibility
      * ========================= */
     $('#toggle-api-key').on('click', function () {
-        const $input = $('#api_key');
+        const $input = $apiKeyInput;
         const type = $input.attr('type') === 'password' ? 'text' : 'password';
         $input.attr('type', type);
         $(this).toggleClass('dashicons-hidden dashicons-visibility');
     });
 
-    // Click Connect with us button
-    // $('#connect-server').on('click', function(){
-    //     $('#api-key-section').slideDown();
-    // });
+    /** =========================
+     * 7. API Key Toggle & Auto-show if has value
+     * ========================= */
+    if ($apiKeyInput.val().trim() !== '') {
+        $apiKeyWrap.show();
+        $toggleSwitch.prop('checked', true);
+        $('#api-key-section').show();
+        $('#connect-server').prop('disabled', true);
+    }
 
-    // Toggle API key input visibility via switch
-    $('#show-api-key-input').on('change', function(){
-        if($(this).is(':checked')){
-            $('#api-key-input-wrap').slideDown();
+    $toggleSwitch.on('change', function () {
+        if ($(this).is(':checked')) {
+            $apiKeyWrap.slideDown();
             $('#connect-server').prop('disabled', true);
+            $apiKeyInput.val('');
         } else {
+            $apiKeyWrap.slideUp();
             $('#connect-server').prop('disabled', false);
-            $('#api-key-input-wrap').slideUp();
         }
     });
-
-    // Toggle password visibility
-    // $('#toggle-api-key').on('click', function(){
-    //     const input = $('#api_key');
-    //     if(input.attr('type') === 'password'){
-    //         input.attr('type', 'text');
-    //     } else {
-    //         input.attr('type', 'password');
-    //     }
-    // });
 
 });
