@@ -143,7 +143,7 @@ class Ajax {
             // Save API key in user meta
             update_user_meta( $current_user->ID, '_prompt2image_api_key', sanitize_text_field( $data['api_key'] ) );
 
-            delete_option( 'prompt2image_user_api' );
+            delete_option( '_prompt2image_user_api' );
 
             wp_send_json_success([
                 'message' => 'Connected to the server successfully!',
