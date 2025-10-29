@@ -81,61 +81,93 @@ class Settings {
      * Render settings page with tabs
      */
     public function render_settings_page() {
-        // Get stored Google Gemini API key from options
-        $google_gemeni = get_option( 'prompt2image-settings', [] );
+    // Get stored Google Gemini API key from options
+    $google_gemeni = get_option('prompt2image-settings', []);
 
-        // Get current logged-in user
-        $current_user   = wp_get_current_user();
-        $server_api_key = get_user_meta( $current_user->ID, '_prompt2image_api_key', true );
+    // Get current logged-in user
+    $current_user   = wp_get_current_user();
+    $server_api_key = get_user_meta($current_user->ID, '_prompt2image_api_key', true);
+    ?>
+    <div class="prompt2image-settings-wrap">
+        <h1><?php esc_html_e('Prompt2Image Settings', 'prompt2image-api'); ?></h1>
 
-        ?>
-        <div class="prompt2image-settings-wrap">
-            <h1><?php esc_html_e( 'Prompt2Image Settings', 'prompt2image-api' ); ?></h1>
+        <form id="prompt2image-settings-form">
 
-            <form id="prompt2image-settings-form">
+            <?php if (empty($server_api_key)) : ?>
+                <!-- Connect via Our Server -->
+                <div class="prompt2image-field-wrap">
+                    <button type="button" id="connect-server" class="button button-connect">Connect with us</button>
+                </div>
 
-                <?php if ( empty( $server_api_key ) ) : ?>
-                    <!-- API Key Input (only show if no server API key exists) -->
-                    <div class="prompt2image-field-wrap">
-                        <label for="api_key"><?php esc_html_e( 'API Key', 'prompt2image-api' ); ?></label>
+                <!-- Hidden API Key Section -->
+                <div id="api-key-section" >
+                    <!-- Toggle switch -->
+                    <div class="switch-wrapper">
+                        <label class="switch">
+                            <input type="checkbox" id="show-api-key-input">
+                            <span class="slider round"></span>
+                        </label>
+                        <span><?php esc_html_e('Use your own API key', 'prompt2image-api'); ?></span>
+                    </div>
 
+                    <div id="api-key-input-wrap" style="display:none; margin-top:15px;">
+                        <label for="api_key"><?php esc_html_e('API Key', 'prompt2image-api'); ?></label>
                         <input 
                             type="password" 
                             id="api_key" 
-                            name="prompt2image[api_key]"
-                            required 
-                            value="<?php echo esc_attr( $google_gemeni['api_key'] ?? '' ); ?>" 
+                            name="prompt2image[api_key]" 
+                            value="<?php echo esc_attr($google_gemeni['api_key'] ?? ''); ?>"
                         >
-                        
-                        <!-- Eye icon to toggle password visibility -->
                         <span id="toggle-api-key" class="dashicons dashicons-visibility"></span>
-
                         <p class="description">
-                            <?php esc_html_e( 'Enter your Google Gemini API key provided by the service.', 'prompt2image-api' ); ?>
+                            <?php esc_html_e('Enter your Google Gemini API key provided by the service.', 'prompt2image-api'); ?>
                         </p>
+                        <button type="submit" class="button button-primary">Save Settings</button>
                     </div>
+                </div>
 
-                    <!-- Save Settings Button -->
-                    <button type="submit" class="button button-primary">Save Settings</button>
-                <?php endif; ?>
+            <?php else : ?>
+                <!-- Show Connected / Disconnect buttons -->
+                <div class="prompt2image-field-wrap prompt2image-buttons-wrapper">
+                    <button type="button" class="button button-connected">Connected</button>
+                    <button type="button" id="disconnect-server" class="button button-disconnect">Disconnect</button>
+                </div>
+            <?php endif; ?>
 
-                <?php if ( empty( $server_api_key ) ) : ?>
-                    <!-- Connect via Our Server (if no server API key) -->
-                    <div class="prompt2image-field-wrap">
-                        <button type="button" id="connect-server" class="button button-connect">Connect with us</button>
-                    </div>
-                <?php else : ?>
-                    <!-- Show Connected / Disconnect buttons -->
-                    <div class="prompt2image-field-wrap prompt2image-buttons-wrapper">
-                        <button type="button" class="button button-connected ">Connected</button>
-                        <button type="button" id="disconnect-server" class="button button-disconnect">Disconnect</button>
-                    </div>
-                <?php endif; ?>
+        </form>
+    </div>
 
-            </form>
-        </div>
-        <?php
-    }
+    <script>
+        jQuery(document).ready(function($){
+            // Click Connect with us button
+            $('#connect-server').on('click', function(){
+                $('#api-key-section').slideDown();
+            });
+
+            // Toggle API key input visibility via switch
+            $('#show-api-key-input').on('change', function(){
+                if($(this).is(':checked')){
+                    $('#api-key-input-wrap').slideDown();
+                } else {
+                    $('#api-key-input-wrap').slideUp();
+                }
+            });
+
+            // Toggle password visibility
+            $('#toggle-api-key').on('click', function(){
+                const input = $('#api_key');
+                if(input.attr('type') === 'password'){
+                    input.attr('type', 'text');
+                } else {
+                    input.attr('type', 'password');
+                }
+            });
+        });
+    </script>
+    <?php
+}
+
+
 
 
 

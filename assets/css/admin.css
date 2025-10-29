@@ -6,12 +6,13 @@
     background: #fff;
     border-radius: 10px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    font-family: Arial, sans-serif;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .prompt2image-settings-wrap h1 {
     font-size: 24px;
-    margin-bottom: 20px;
+    margin-bottom: 25px;
+    color: #333;
 }
 
 /* Tabs */
@@ -241,19 +242,7 @@
     transform: translateY(-1px);
 }
 
-/* Eye icon */
-#toggle-api-key {
-    position: absolute;
-    right: 10px;
-    top: 38px;
-    cursor: pointer;
-    font-size: 16px;
-    color: #555;
-    transition: color 0.2s ease;
-}
-
-#toggle-api-key:hover { color: #000; }
-#toggle-api-key.dashicons-hidden { color: #999; }
+/**/
 
 /* Flex container for buttons */
 .prompt2image-buttons-wrapper {
@@ -485,3 +474,162 @@
 }
 
 
+/* Modern toggle switch wrapper */
+.switch-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 15px;
+}
+
+/* Switch styling */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 24px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+    border-radius: 24px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+input:checked + .slider {
+    background-color: #0073aa;
+}
+
+input:checked + .slider:before {
+    transform: translateX(26px);
+}
+
+/* API Key input */
+#api-key-input-wrap input[type="password"] {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: border 0.3s, box-shadow 0.3s;
+}
+
+#api-key-input-wrap input[type="password"]:focus {
+    border-color: #0073aa;
+    box-shadow: 0 0 5px rgba(0,115,170,0.2);
+    outline: none;
+}
+
+/* Description */
+#api-key-input-wrap .description {
+    font-size: 13px;
+    color: #666;
+    margin-top: 5px;
+}
+
+/* Make input wrapper relative */
+#api-key-input-wrap {
+    position: relative; /* add this */
+    width: 100%;
+}
+
+/* Password input */
+#api-key-input-wrap input[type="password"] {
+    width: 100%;
+    padding: 10px 40px 10px 12px; /* extra padding-right for icon */
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: border 0.3s, box-shadow 0.3s;
+}
+
+/* Password toggle icon inside the input box */
+#toggle-api-key {
+    position: absolute;
+    right: 12px; /* inside padding */
+    top: 28%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #999;
+}
+
+/* Save button */
+#api-key-input-wrap .button-primary {
+    background-color: #0073aa;
+    border: none;
+    color: #fff;
+    padding: 10px 25px;
+    font-size: 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.3s;
+    margin-top: 15px;
+}
+
+#api-key-input-wrap .button-primary:hover {
+    background-color: #005880;
+}
+
+/* Connect button */
+.button-connect {
+    background-color: #00a0d2;
+    color: #fff;
+    border-radius: 6px;
+    padding: 10px 25px;
+    font-size: 14px;
+    border: none;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.button-connect:hover {
+    background-color: #0073aa;
+}
+
+/* Connected / Disconnect buttons */
+.button-connected {
+    background-color: #46b450;
+    color: #fff;
+    border-radius: 6px;
+    padding: 10px 25px;
+    border: none;
+    margin-right: 10px;
+    cursor: default;
+}
+
+.button-disconnect {
+    background-color: #d63638;
+    color: #fff;
+    border-radius: 6px;
+    padding: 10px 25px;
+    border: none;
+    cursor: pointer;
+}
+
+.button-disconnect:hover {
+    background-color: #a32c2f;
+}
