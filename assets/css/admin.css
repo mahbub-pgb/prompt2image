@@ -498,7 +498,7 @@ input:checked + .slider:before { transform: translateX(26px); }
     gap: 15px;
     align-items: center;
     margin-top: 20px;
-    justify-content: center;
+    /*justify-content: center;*/
 }
 
 /* --- Connected Button --- */
