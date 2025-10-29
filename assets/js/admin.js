@@ -219,7 +219,7 @@ jQuery(document).ready(function ($) {
                 $btnText.text('✅ Connected');
                 $('#connect-server').text('✅ Connected');
                 $loader.fadeOut(150);
-                // window.location.reload();
+                window.location.reload();
             }, 500);
         }).fail(function () {
             $loader.fadeOut(150);
