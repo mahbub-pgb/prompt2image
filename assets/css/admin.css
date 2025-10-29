@@ -557,8 +557,9 @@ input:checked + .slider:before {
     width: 100%;
 }
 
-/* Password input */
-#api-key-input-wrap input[type="password"] {
+/* Password / Text input with icon */
+#api-key-input-wrap input[type="password"],
+#api-key-input-wrap input[type="text"] {
     width: 100%;
     padding: 10px 40px 10px 12px; /* extra padding-right for icon */
     border: 1px solid #ddd;

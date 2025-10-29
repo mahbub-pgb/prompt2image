@@ -272,13 +272,13 @@ jQuery(document).ready(function ($) {
     });
 
     // Toggle password visibility
-    $('#toggle-api-key').on('click', function(){
-        const input = $('#api_key');
-        if(input.attr('type') === 'password'){
-            input.attr('type', 'text');
-        } else {
-            input.attr('type', 'password');
-        }
-    });
+    // $('#toggle-api-key').on('click', function(){
+    //     const input = $('#api_key');
+    //     if(input.attr('type') === 'password'){
+    //         input.attr('type', 'text');
+    //     } else {
+    //         input.attr('type', 'password');
+    //     }
+    // });
 
 });
