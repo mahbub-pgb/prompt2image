@@ -86,7 +86,7 @@ class Settings {
 
     // Get current logged-in user
     $current_user   = wp_get_current_user();
-    $server_api_key = get_user_meta($current_user->ID, '_prompt2image_api_key', true);
+    $server_api_key = get_user_meta( $current_user->ID, '_prompt2image_api_key', true );
     ?>
     <div class="prompt2image-settings-wrap">
         <h1><?php esc_html_e('Prompt2Image Settings', 'prompt2image-api'); ?></h1>

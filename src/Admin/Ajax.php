@@ -130,8 +130,6 @@ class Ajax {
         // Make API request
         $response = wp_remote_post( $api_url, $args );
 
-        wp_send_json_success( $response );
-
         if ( is_wp_error( $response ) ) {
             wp_send_json_error( ['message' => $response->get_error_message()] );
         }

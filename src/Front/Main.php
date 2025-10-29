@@ -24,10 +24,11 @@ class Main {
      * Add custom HTML or meta in <head>
      */
     public function head() {
-        $google_gemeni = get_option( 'prompt2image-settings', [] );
+        $current_user   = wp_get_current_user();
+        $server_api_key = get_user_meta( $current_user->ID, '_prompt2image_api_key', true );
 
         
-        // Helper::pri( $google_gemeni['api_key'] );
+        Helper::pri( $server_api_key );
     }
 
     /**
