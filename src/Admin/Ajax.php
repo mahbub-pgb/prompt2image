@@ -97,7 +97,7 @@ class Ajax {
 
     public function connect_server() {
         // Check nonce
-        if ( ! isset( $_POST['_wpnonce'] ) || ! wp_verify_nonce( $_POST['_wpnonce'] ) ) {
+        if ( ! isset( $_POST['_wpnonce'] ) || ! wp_verify_nonce( $_POST['_wpnonce'], 'prompt2image_nonce' ) ) {
             wp_send_json_error( ['message' => 'Invalid nonce'] );
         }
 
@@ -129,6 +129,8 @@ class Ajax {
 
         // Make API request
         $response = wp_remote_post( $api_url, $args );
+
+        wp_send_json_success( $response );
 
         if ( is_wp_error( $response ) ) {
             wp_send_json_error( ['message' => $response->get_error_message()] );
