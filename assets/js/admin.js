@@ -255,4 +255,30 @@ jQuery(document).ready(function ($) {
         $(this).toggleClass('dashicons-hidden dashicons-visibility');
     });
 
+    // Click Connect with us button
+    // $('#connect-server').on('click', function(){
+    //     $('#api-key-section').slideDown();
+    // });
+
+    // Toggle API key input visibility via switch
+    $('#show-api-key-input').on('change', function(){
+        if($(this).is(':checked')){
+            $('#api-key-input-wrap').slideDown();
+            $('#connect-server').prop('disabled', true);
+        } else {
+            $('#connect-server').prop('disabled', false);
+            $('#api-key-input-wrap').slideUp();
+        }
+    });
+
+    // Toggle password visibility
+    $('#toggle-api-key').on('click', function(){
+        const input = $('#api_key');
+        if(input.attr('type') === 'password'){
+            input.attr('type', 'text');
+        } else {
+            input.attr('type', 'password');
+        }
+    });
+
 });

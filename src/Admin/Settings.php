@@ -136,34 +136,6 @@ class Settings {
 
         </form>
     </div>
-
-    <script>
-        jQuery(document).ready(function($){
-            // Click Connect with us button
-            $('#connect-server').on('click', function(){
-                $('#api-key-section').slideDown();
-            });
-
-            // Toggle API key input visibility via switch
-            $('#show-api-key-input').on('change', function(){
-                if($(this).is(':checked')){
-                    $('#api-key-input-wrap').slideDown();
-                } else {
-                    $('#api-key-input-wrap').slideUp();
-                }
-            });
-
-            // Toggle password visibility
-            $('#toggle-api-key').on('click', function(){
-                const input = $('#api_key');
-                if(input.attr('type') === 'password'){
-                    input.attr('type', 'text');
-                } else {
-                    input.attr('type', 'password');
-                }
-            });
-        });
-    </script>
     <?php
 }
 
