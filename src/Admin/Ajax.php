@@ -97,7 +97,7 @@ class Ajax {
 
     public function connect_server() {
         // Check nonce
-        if ( ! isset( $_POST['_wpnonce'] ) || ! wp_verify_nonce( $_POST['_wpnonce'], 'prompt2image_nonce' ) ) {
+        if ( ! isset( $_POST['_wpnonce'] ) || ! wp_verify_nonce( $_POST['_wpnonce'] ) ) {
             wp_send_json_error( ['message' => 'Invalid nonce'] );
         }
 
@@ -107,23 +107,24 @@ class Ajax {
             wp_send_json_error( ['message' => 'User not logged in'] );
         }
 
+        // Get site name
+        $site_name = get_bloginfo( 'name' );
+
+        // Prepare user data with site name
         $user_data = [
             'username'  => $current_user->user_login,
             'email'     => $current_user->user_email,
+            'site_name' => $site_name,  
         ];
-        // $user_data = [
-        //     'username'  => 'Mahbub1',
-        //     'email'     => 'mahbub1@gmail.com',
-        // ];
 
         // Prepare API request
         $api_url = P2I_API_BASE_URL . 'register';
         $args = [
-            'body'        => wp_json_encode( $user_data ),
-            'headers'     => [
+            'body'    => wp_json_encode( $user_data ),
+            'headers' => [
                 'Content-Type' => 'application/json',
             ],
-            'timeout'     => 20,
+            'timeout' => 20,
         ];
 
         // Make API request
@@ -137,11 +138,11 @@ class Ajax {
         $data = json_decode( $body, true );
 
         if ( isset( $data['api_key'] ) ) {
-            // Optionally, save API key in user meta
+            // Save API key in user meta
             update_user_meta( $current_user->ID, '_prompt2image_api_key', sanitize_text_field( $data['api_key'] ) );
 
-            delete_option( 'prompt2image-settings' );
- 
+            delete_option( 'prompt2image_user_api' );
+
             wp_send_json_success([
                 'message' => 'Connected to the server successfully!',
                 'user'    => $user_data,
@@ -152,6 +153,7 @@ class Ajax {
             wp_send_json_error( ['message' => $error_message] );
         }
     }
+
 
     public function disconnect_server() {
         // Check nonce
